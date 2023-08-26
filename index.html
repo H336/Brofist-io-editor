@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Brofist.io - Editor</title>
+
+	<script type="text/javascript" src="_.js"></script>
+	<link rel="stylesheet" type="text/css" href="editor.css">
+
+
+
+
+</head>
+<body onload="onDomReady()">
+	
+
+<div id="toolsContainer">
+	<img src="img/editor/select.png" ondragstart="return false;" onclick="editor.selectItem(this)" />
+	<img src="img/editor/rectangle.png" ondragstart="return false;" onclick="editor.selectItem(this)" />
+	<img src="img/editor/circle.png" ondragstart="return false;" onclick="editor.selectItem(this)" />
+	<img src="img/editor/txt.png" ondragstart="return false;" onclick="editor.selectItem(this)" />
+	<img src="img/editor/button.png" ondragstart="return false;" onclick="editor.selectItem(this)" />
+	<img src="img/editor/lever.png" ondragstart="return false;" onclick="editor.selectItem(this)" />
+	<img src="img/editor/checkpoint.png" ondragstart="return false;" onclick="editor.selectItem(this)" />
+	<img src="img/editor/door.png" ondragstart="return false;" onclick="editor.selectItem(this)" />
+	<img src="img/editor/seeker.png" ondragstart="return false;" onclick="editor.selectItem(this)" />
+
+</div>
+
+
+<div id="propertiesContainer"></div>
+
+
+<!-- <div id="template">
+	<div id="title"><p>Gate</p><input type="checkbox" name="" onclick="editor.applyEffect(this)"></div>
+	<div id="gateContainer">
+		<div id="id"><p>id</p><input type="text" value="gate1" readonly=""></div>
+		<div id="select"><p>show on press</p><input type="radio" name="action" value="show" onclick="editor.showGate(this, true)"></div>
+		<div id="select"><p>hide on press</p><input type="radio" name="action" value="hide" onclick="editor.showGate(this, false)" checked="checked"></div>
+	</div>
+	<div id="title"><p>Platform</p><input type="checkbox" name="" onclick="editor.applyEffect(this)"></div>
+	<div id="platformContainer">
+		<div id="id"><p>id</p><input type="text" value="platform1" readonly=""></div>
+		<div id="id"><p>speed</p><input type="text" value="0.5" onchange="editor.changePlatformSpeed(this)"></div>
+	</div>
+	<div id="title"><p>Rotator</p><input type="checkbox" name="" onclick="editor.applyEffect(this)"></div>
+	<div id="rotatorContainer">
+		<div id="id"><p>speed</p><input type="text" value="0.5" onchange="editor.changeRotatorSpeed(this)"></div>
+	</div>
+</div> -->
+
+
+<div id="widgetContainer">
+
+</div>
+
+
+
+
+<div id="sceneManagmentContainer">
+	<img src="img/editor/save.png" ondragstart="return false;" onclick="editor.save(true, true)" />
+	<label for="filePicker"><img src="img/editor/load.png" ondragstart="return false;" /></label><input type="file" id="filePicker" >
+	<img src="img/editor/model_download.png" ondragstart="return false;" onclick="editor.saveModel()" />
+	<label for="modelFilePicker"><img src="img/editor/model_upload.png" ondragstart="return false;" /></label><input type="file" id="modelFilePicker" >
+	<img src="img/editor/play.png" ondragstart="return false;" onclick="editor.playPause(this)" />
+	<img src="img/editor/upload.png" ondragstart="return false;" onclick="editor.showSubmissionForm()" />
+	
+</div>
+
+
+<!-- <div id="gravityScaleContainer">
+	<input id="slider1" type="range" min="0" max="30" step="1" />
+</div> -->
+
+
+
+<iframe id="playFrame" src="GPlayer/index.html"></iframe>
+<div id="iframeClose" onclick="editor.closeFrame()">CLOSE</div>
+
+
+<!-- 
+<div id="mapSubmissionContainer">
+	<div id="cross" onclick="editor.closeSubmissionForm()">CLOSE [x]</div>
+	<div id="title">Copy <b>Map Data</b> from left window and paste into right window's  <b>Map Data</b> field with other appropriate fields</div>
+	<div id="windowContainer">
+		<textarea spellcheck="false" id="mapDataClipper"></textarea>
+		<iframe id="googleSubmissionForm" src="https://docs.google.com/forms/d/e/1FAIpQLSeUzp3cgBKvZsm7Hk3-Bl7Baj7oqqlO5JX2sYybt90ILNFCjA/viewform"></iframe>
+		<div class="spacer" style="clear: both;"></div>
+	</div>
+</div> -->
+
+
+
+
+</body>
+</html>

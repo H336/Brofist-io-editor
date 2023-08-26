@@ -1,0 +1,266 @@
+body{	
+	margin: 0;
+	padding: 0;
+	overflow: hidden;
+	font-family: sans-serif;
+	background: #ccc
+}
+
+canvas{
+	border:0px solid;
+}
+
+
+
+#toolsContainer, #propertiesContainer, #sceneManagmentContainer, #gravityScaleContainer, #widgetContainer{
+	border: 1px solid #a7a7a7;
+	width: 133px;
+	position: absolute;
+	background: white;
+	top: 0px;
+	left:0px;
+	padding: 6px;
+	user-select: none;
+}
+
+#gravityScaleContaine{
+	width:100px;
+}
+
+#toolsContainer{
+	width: 33px;
+}
+
+#toolsContainer img{
+	border: 1px solid #ffffff; 
+	padding: 4px;
+}
+
+#toolsContainer img:hover{background: #cccccc;}
+#toolsContainer img:active{background: #5d5d5d;}
+
+
+
+#propertiesContainer{
+	width: 253px;
+	overflow: scroll;
+	overflow-x: hidden;
+	height: 325px;
+	border-color: #d2d2d2;
+}
+
+
+#widgetContainer{
+	width: 253px;
+	overflow: scroll;
+	overflow-x: hidden;
+	height: 325px;
+	border-color: #d2d2d2;
+}
+
+#sceneManagmentContainer{
+	width: 265px;
+	height: 41px;
+}
+
+#sceneManagmentContainer img{
+	border: 1px solid #ffffff; 
+	padding: 4px;
+}
+
+#sceneManagmentContainer img:hover{background: #cccccc;}
+#sceneManagmentContainer img:active{background: #5d5d5d;}
+
+
+
+#filePicker{
+	display: none;
+}
+#modelFilePicker{
+	display: none;
+}
+
+
+
+#inputField{
+	
+width: 50%;
+	
+float: right;
+	
+padding: 1px 4px;
+}
+
+
+#propertyName{
+/* border: 1px solid; */
+float: left;
+margin: 0px;
+}
+
+#propertyContainer{
+	
+/* border: 1px solid; */
+	
+height: 20px;
+	
+padding: 4px;
+}
+
+#widgetContainer input{
+	margin: 5px 13px;
+	height: 15px;
+}
+
+#add{
+	color: blue;
+}
+
+
+
+#widgetContainer #effect{
+	border: 1px solid;
+}
+
+#widgetContainer #title{
+	padding: 5px 0px;
+	margin-top: 5px;
+	background: #f3f3f3;
+}
+
+#widgetContainer #title p{
+	font-size: 15px;
+	display: inline;
+	font-weight: bold;
+	color: #565454;
+}
+
+#widgetContainer #title input{
+	width: 13px;
+	float: right;
+	margin-right: 18px;
+	margin-top: 2px;
+}
+
+
+#gateContainer #id, #platformContainer #id, #rotatorContainer #id, #coverContainer #id{
+	margin-top: 5px;
+	/* border: 1px solid; */
+	height: 24px;
+}
+
+#gateContainer #select{
+	margin-top: 5px;
+	/* border: 1px solid blue; */
+}
+
+#gateContainer #id p, #platformContainer #id p, #rotatorContainer #id p, #coverContainer #id p{
+	margin: 0px;
+	/* width: 20px; */
+	float: left;
+	margin-top: 2px;
+}
+
+#gateContainer #select p{margin: 0px;width: 133px;float: left;margin-top: 2px;}
+
+#gateContainer #id input, #platformContainer #id input, #rotatorContainer #id input, #coverContainer #id input{
+	margin: 0px;
+	float: right;
+	border: 1px solid #ccc;
+}
+
+
+#gateContainer #select input{
+	width: 14px;
+	/* float: right; */
+	margin-left: 70px;
+}
+
+#template{
+	/* display: none; */
+}
+
+
+#playFrame{
+	width: 100%;
+	height: 100vh;
+	position: absolute;
+	background: white;
+	border: 0px;
+	z-index: 1;
+	display: none;
+}
+
+#iframeClose{
+	    position: absolute;
+	    padding: 7px;
+	    z-index: 94;
+	    border: 1px solid #ff6f6f;
+	    background: white;
+	    color: #ff6f6f;
+	    font-size: 12px;
+	    border-radius: 5px;
+	    left: 7px;
+	    top: 7px;
+	    cursor: pointer;
+	    box-shadow: 0px 2px 4px 1px #ccc;
+	    display: none;
+}
+
+
+#mapSubmissionContainer{
+	/* border: 1px solid; */
+	background: #ffffff;
+	width: 100%;
+	position: absolute;
+	display: none;
+}
+
+
+#mapSubmissionContainer #title{
+	text-align: center;
+	padding: 18px 0px;
+	background: white;
+	margin-bottom: 4px;
+}
+
+ #cross{
+ 	color:red;
+ }
+#mapSubmissionContainer #cross{
+	border: 1px solid;
+	text-align: center;
+	float: left;
+	font-size: 13px;
+	padding: 8px 14px;
+	margin-top: 11px;
+	margin-left: 13px;
+	border-radius: 5px;
+	cursor: pointer;
+	color: red;
+}
+
+#mapSubmissionContainer #windowContainer{
+	/* border: 1px solid green; */
+	width: 100%;
+}
+
+#mapSubmissionContainer #windowContainer textarea{
+	border: 1px solid blue;
+	width: 49%;
+	height: 90vh;
+	float: left;
+	border-radius: 5px;
+	font-size: 11px;
+	/* color: #060654; */
+}
+
+
+
+#mapSubmissionContainer #windowContainer iframe{
+	border: 1px solid;
+	width: 50%;
+	float: right;
+	height: 90.4vh;
+	border-radius: 5px;
+}
