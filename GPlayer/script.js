@@ -651,7 +651,7 @@
 					ref: w[i],
 					action: w[i].id[_]
 				},
-				"0" == w[i].infoOfGate.action ? (w[i].setCollision(!0),
+				"0" == w[i].infoOfGate.action ? (w[i].setCollision(!0), // note: Это то, почему gate-кнопка твёрдая
 				w[i].setAlpha(1)) : (w[i].setCollision(!1),
 				w[i].setAlpha(0))
 			}
@@ -673,7 +673,8 @@
 				}
 				,
 				x[i].p.onTouchStart = function(t) {
-					if (void 0 !== t.ref.refP.iAmPlayer) {
+					//console.log(t.ref.refP.id, t);
+					//if (void 0 !== t.ref.refP.iAmPlayer) { // note: нужно убрать условие на iAmPlayer, чтобы платформы смогли нажимать кнопки!
 						this.ref.pplOnButton++,
 						this.ref.redButtonShape.setAlpha(0);
 						for (var e = 0; e < this.ref.gates.length; e++)
@@ -681,11 +682,11 @@
 							this.ref.gates[e].setAlpha(0)) : (this.ref.gates[e].setCollision(!0),
 							this.ref.gates[e].setAlpha(1)),
 							1 == this.ref.pplOnButton && this.ref.gates[e].activeButtons++
-					}
+					//}
 				}
 				,
 				x[i].p.onTouchEnd = function(t) {
-					if (void 0 !== t.ref.refP.iAmPlayer && (this.ref.pplOnButton--,
+					if (/*void 0 !== t.ref.refP.iAmPlayer &&*/ (this.ref.pplOnButton--, // note: и тут
 					0 == this.ref.pplOnButton)) {
 						this.ref.redButtonShape.setAlpha(1);
 						for (var e = 0; e < this.ref.gates.length; e++)
@@ -2147,7 +2148,14 @@
 			h.setCollision = function(t) {
 				if (null != this.p)
 					for (var e = 0; e < this.p.shapes.length; e++)
-						this.p.shapes[e].sensor = !t
+						this.p.shapes[e].sensor = !t,
+						//console.log(this.p.shapes[e].collisionMask, this.p.shapes[e]),
+						//this.p.shapes[e].collisionMask_backup = this.p.shapes[e].collisionMask_backup || this.p.shapes[e].collisionMask,
+						
+						//console.log(this.p.shapes[e]),
+						this.p.shapes[e].ref.id.startsWith("button:") && (this.p.shapes[e].collisionMask = t ? 3 : 0)
+
+						// note: по логике, если я по нажатии кнопки скрою другую кнопку-платформу, то она должна улететь куда-то в бесконечность (ведь у неё collisionMask=0, т.е. она НИ С ЧЕМ не может соприкасаться - в т.ч. с "контрольными точками платформы"), но этого почему-то не происходит.... мне лень разбираться ;D
 			}
 			,
 			h.getMass = function() {
@@ -41217,8 +41225,8 @@
 				this.worker = void 0),
 				this.worker = new Worker(window.URL.createObjectURL(t)),
 				this.worker.onmessage = function(t) {
-					i.client.update(i.bgTimeStep),
-					console.log("updating the game loop")
+					i.client.update(i.bgTimeStep)//,
+					//console.log("updating the game loop")
 				}
 				,
 				this.worker.postMessage("startTimer"),
