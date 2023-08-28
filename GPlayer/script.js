@@ -1,3 +1,5 @@
+ondblclick = () => player1.gpData.p.world.bodies.map(x => x.ref.setAlpha(.5)); // debug
+
 !function r(i, o, s) {
 	function a(e, t) {
 		if (!o[e]) {
@@ -653,7 +655,13 @@
 				},
 				"0" == w[i].infoOfGate.action ? (w[i].setCollision(!0), // note: Это то, почему gate-кнопка твёрдая
 				w[i].setAlpha(1)) : (w[i].setCollision(!1),
-				w[i].setAlpha(0))
+				w[i].setAlpha(0));
+
+				// note: Чтобы гейты могли нажимать кнопки, нужен код ниже:
+				if(!w[i].shapes.some(x => x.id.includes("button:"))) { // Без этого условия кнопки-гейты будут нажимать сами себя, а это плохо :D
+					w[i].p.mass = 0;
+					w[i].p.type = 1;
+				}
 			}
 			for (i = 0; i < x.length; i++) {
 				x[i].gates = [],
@@ -744,7 +752,7 @@
 					id: S[i].info.id,
 					shapes: [{
 						type: 2,
-						radius: 50,
+						radius: 20, // note: Та скрытая часть платформы, которая и нажимает кнопки (спец-фигура), теперь уменьшена!
 						color: "0xcccccc"
 					}]
 				}, $)
@@ -763,7 +771,7 @@
 					id: S[i].info.id,
 					shapes: [{
 						type: 2,
-						radius: 50,
+						radius: 80, // note: Но тогда нужно увеличить и радиус контрольных точек на 30...
 						color: "0x4caf50"
 					}]
 				}, $),
@@ -787,7 +795,7 @@
 					id: S[i].info.id,
 					shapes: [{
 						type: 2,
-						radius: 50,
+						radius: 80, // note: ...и тут
 						color: "0x4caf50"
 					}]
 				}, $),
@@ -2149,13 +2157,10 @@
 				if (null != this.p)
 					for (var e = 0; e < this.p.shapes.length; e++)
 						this.p.shapes[e].sensor = !t,
-						//console.log(this.p.shapes[e].collisionMask, this.p.shapes[e]),
-						//this.p.shapes[e].collisionMask_backup = this.p.shapes[e].collisionMask_backup || this.p.shapes[e].collisionMask,
 						
 						//console.log(this.p.shapes[e]),
-						this.p.shapes[e].ref.id.startsWith("button:") && (this.p.shapes[e].collisionMask = t ? 3 : 0)
-
-						// note: по логике, если я по нажатии кнопки скрою другую кнопку-платформу, то она должна улететь куда-то в бесконечность (ведь у неё collisionMask=0, т.е. она НИ С ЧЕМ не может соприкасаться - в т.ч. с "контрольными точками платформы"), но этого почему-то не происходит.... мне лень разбираться ;D
+						//this.p.shapes[e].ref.id.includes("button:") || this.p.shapes[e].ref.refP.id.includes("gate:") && (this.p.shapes[e].collisionMask = t ? 3 : 0)
+						(this.p.shapes[e].ref.redButtonShape || this.p.shapes[e].ref.refP.infoOfGate) && (this.p.shapes[e].collisionMask = t ? 3 : 0) // note: кнопки и гейты могут "скрываться" из физического мира (в "скрытом" состоянии КНОПКА не может быть нажата, а ГЕЙТ не может нажимать другие кнопки)
 			}
 			,
 			h.getMass = function() {
