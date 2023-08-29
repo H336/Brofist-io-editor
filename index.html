@@ -14,16 +14,20 @@
 	
 
 <div id="toolsContainer">
-	<img src="img/editor/select.png" ondragstart="return false;" onclick="editor.selectItem(this)" />
-	<img src="img/editor/rectangle.png" ondragstart="return false;" onclick="editor.selectItem(this)" />
-	<img src="img/editor/circle.png" ondragstart="return false;" onclick="editor.selectItem(this)" />
-	<img src="img/editor/txt.png" ondragstart="return false;" onclick="editor.selectItem(this)" />
-	<img src="img/editor/button.png" ondragstart="return false;" onclick="editor.selectItem(this)" />
-	<img src="img/editor/lever.png" ondragstart="return false;" onclick="editor.selectItem(this)" />
-	<img src="img/editor/checkpoint.png" ondragstart="return false;" onclick="editor.selectItem(this)" />
-	<img src="img/editor/door.png" ondragstart="return false;" onclick="editor.selectItem(this)" />
-	<img src="img/editor/seeker.png" ondragstart="return false;" onclick="editor.selectItem(this)" />
-
+	<img ondragstart="return false" onclick="editor.selectItem(this, 0)" src="img/editor/select.png" />
+	<img ondragstart="return false" onclick="editor.selectItem(this, 1)" src="img/editor/rectangle.png" />
+	<img ondragstart="return false" onclick="editor.selectItem(this, 2)" src="img/editor/circle.png" />
+	<img ondragstart="return false" onclick="editor.selectItem(this, 3)" src="img/editor/txt.png" />
+	<img ondragstart="return false" onclick="editor.selectItem(this, 4)" src="img/editor/button.png" />
+	<img ondragstart="return false" onclick="editor.selectItem(this, 5)" src="img/editor/lever.png" />
+	<img ondragstart="return false" onclick="editor.selectItem(this, 6)" src="img/editor/checkpoint.png" />
+	<img ondragstart="return false" onclick="editor.selectItem(this, 7)" src="img/editor/door.png" />
+	<img ondragstart="return false" onclick="editor.selectItem(this, 8)" src="img/editor/seeker.png" />
+	<!-- <span><hr></span> -->
+	<div onclick="editor.selectItem(this, 9)">OR</div>
+	<div onclick="editor.selectItem(this, 10)">AND</div>
+	<div onclick="editor.selectItem(this, 11)">NOR</div>
+	<div onclick="editor.selectItem(this, 12)">NAND</div>
 </div>
 
 

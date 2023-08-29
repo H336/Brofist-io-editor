@@ -28,7 +28,8 @@ canvas{
 }
 
 #toolsContainer{
-	width: 33px;
+	width: 50px;
+    text-align: center;
 }
 
 #toolsContainer img{
@@ -36,8 +37,13 @@ canvas{
 	padding: 4px;
 }
 
-#toolsContainer img:hover{background: #cccccc;}
-#toolsContainer img:active{background: #5d5d5d;}
+#toolsContainer div{ /* note: для моих логических вентилей */
+	padding: .5em 0;
+	text-align: center;
+}
+
+#toolsContainer img:hover, #toolsContainer div:hover{background: #cccccc;}
+#toolsContainer img:active, #toolsContainer div:active{background: #5d5d5d;}
 
 
 
