@@ -27509,7 +27509,7 @@
 					t.view.addEventListener("webglcontextrestored", t.handleContextRestored, !1),
 					t._contextOptions = {
 						alpha: t.transparent,
-						antialias: t.options.antialias,
+						antialias: true, // note: Добавил сглаживание в GPlayer
 						premultipliedAlpha: t.transparent && "notMultiplied" !== t.transparent,
 						stencil: !0,
 						preserveDrawingBuffer: t.options.preserveDrawingBuffer,
