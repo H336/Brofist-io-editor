@@ -28,8 +28,9 @@ canvas{
 }
 
 #toolsContainer{
-	width: 50px;
+	width: 120px;
     text-align: center;
+    z-index: 1;
 }
 
 #toolsContainer img{
@@ -38,7 +39,7 @@ canvas{
 }
 
 #toolsContainer div{ /* note: для моих логических вентилей */
-	padding: .5em 0;
+	padding: .25em 0;
 	text-align: center;
 }
 

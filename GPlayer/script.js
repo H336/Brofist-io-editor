@@ -1,4 +1,4 @@
-ondblclick = () => player1.gpData.p.world.bodies.map(x => x.ref.setAlpha(.5)); // debug
+﻿ondblclick = () => player1.gpData.p.world.bodies.map(x => x.ref.setAlpha(.5)); // debug
 
 !function r(i, o, s) {
 	function a(e, t) {
