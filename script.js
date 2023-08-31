@@ -1,4 +1,13 @@
-﻿ondblclick = e => console.log(e.shiftKey ? (e.ctrlKey ? editor.save(0,0,1) : JSON.stringify(JSON.parse(editor.save(0,0,1)), null, '\t')) : (window.obj = editor.selectedShapesList[0])); // debug
+﻿ondblclick = e => { // debug
+	if(e.target != document.querySelector("canvas")) return;
+
+	if(e.shiftKey) {
+		console.log(e.ctrlKey ? editor.save(0,0,1) : JSON.stringify(JSON.parse(editor.save(0,0,1)), null, '\t'));
+	} else {
+		console.log(window.obj = editor.selectedShapesList[0]);
+		console.log("obj.shapes[0].getColor() == ", obj.shapes[0].getColor());
+	}
+}
 onbeforeunload = () => 1;
 onkeydown = e => { // Выбор объектов в боковой панельке (клавиши 0-9)
 	let n = +e.key;
@@ -9,8 +18,17 @@ onkeydown = e => { // Выбор объектов в боковой панель
 var logicGateLinker = {
 	from: null,
 	to: null,
+	line: [], // line & lineTip
 	mousedown(ref) {
+		if(this.from) return; // Если ты нажал, а потом отпустил мышь на ПАНЕЛЬКЕ, а потом снова пытаешься нажать - надо выйти
 		this.from = ref;
+	},
+	mousemove() {
+		if(!this.from) return;
+
+		let {x, y} = editor.getMouseCord();
+		lineBuilder.removeLines(this.line);
+		this.line = lineBuilder.line(this.from.getX(), this.from.getY(), x, y, false);
 	},
 	mouseup(ref) {
 		if(this.from && ref) {
@@ -19,6 +37,9 @@ var logicGateLinker = {
 		}
 
 		this.from = this.to = null;
+
+		lineBuilder.removeLines(this.line);
+		this.line = [];
 	},
 
 	link(A, B) {
@@ -33,7 +54,6 @@ var logicGateLinker = {
 		if(leverShape) buttonShape = this.createButton4lever(A);
 		if(!buttonShape) return console.error(`Можно соединять только рычаг или кнопку`);
 		this.linkButton2gate(buttonShape, B, toInput);
-		this.connect(A, B);
 
 		console.log(`%c'${leverShape ? "Рычаг" : "Кнопка"}' и '${toInput ? "вход" : "какой-то объект"}' успешно соединились!`, "color: #0a0; font-size: 20px");
 
@@ -57,6 +77,7 @@ var logicGateLinker = {
 	},
 
 	createButton4lever(lever) {
+		if(!lever.shapes[4]) throw new Error("\n\nНажать один раз (т.е. соединить с самим собой) можно только рычаг.\n");
 		if(lever.shapes[4].id != "leaver:") throw new Error("\n\nНельзя соединять рычаг более 1 раза :(\n(но можно соединить кнопку снизу рычага)\n");
 
 		let [x, y] = [lever.getX() + 6.195, lever.getY() + 50];
@@ -80,31 +101,12 @@ var logicGateLinker = {
 		]);
 
 		return g.list[g.list.length - 2].shapes[2]; // Я не могу просто вернуть btn.shapes[2], потому что мне нужна кнопка, загруженная В МИР (p.s. и я беру length-2 вместо length-1, потому что последним элементом g.list будет handle, а не кнопка, как ты мог подумать)
-	},
-
-	connect(A, B) {
-		let [ax, ay] = [A.getX(), A.getY()];
-		let [bx, by] = [B.getX(), B.getY()];
-		let len = Math.hypot(ax-bx, ay-by);
-		let angle = -Math.atan2(ay-by, ax-bx) * 180/Math.PI;
-
-		editor.loadMap([{
-			x: (ax+bx)/2,
-			y: (ay+by)/2,
-			angle,
-			id: "logicGateConnection",
-			shapes: [{
-				width: len,
-				height: 5,
-				alpha: .2,
-				make: 3,
-				color: "0x00FF00"
-			}]
-		}]);
 	}
 }
 
 var button = (x, y) => ({x,y,angle:0,mass:0,id:"",shapes:[{x:0,y:0,width:20,height:13,angle:0,radius:10,alpha:1,id:"",collision:!1,color:"0xff0000",fontSize:"",text:"",make:3,type:1},{x:-.5277872085571302,y:6.614923477172852,width:34,height:9,angle:0,radius:17,alpha:1,id:"",collision:!1,color:"0x535353",fontSize:"",text:"",make:3,type:1},{x:-.5690336227416992,y:-4.433515295386314,width:34,height:30,angle:0,radius:50,alpha:.2,id:"button:",collision:!1,color:"0x000000",fontSize:"",text:"",make:1,type:1}]});
+
+addEventListener("mousemove", () => logicGateLinker.mousemove());
 
 
 
@@ -172,25 +174,12 @@ var customLGManager = {
 	save2localStorage(bodiesStr, name) {
 		customLGs[name] = bodiesStr;
 		localStorage.setItem("h336_customLogicGates", JSON.stringify(customLGs));
-	}
-}
-
-var customLGs = localStorage.getItem("h336_customLogicGates");
-customLGs = customLGs ? JSON.parse(customLGs) : {}; // Объект со строками (JSON)
-
-for(let name in customLGs) customLGManager.load2dom(name);
+	},
 
 
+	createFrame() { // hotkey F
+		if(!editor.selectRectangle) return;
 
-
-
-
-
-addEventListener("keydown", e => {
-	if(document.activeElement != document.body) return;
-
-	// F = выделение в рамочку :3
-	if(editor.selectRectangle && e.keyCode == 'F'.charCodeAt()) {
 		let {x, y, width: w, height: h} = editor.selectRectangle;
 		console.log({x, y, w, h});
 
@@ -205,7 +194,7 @@ addEventListener("keydown", e => {
 			shapes: [{
 				width: w - 2,
 				height: h - 2,
-				color: CUSTOM_color,
+				color: logicGates.CUSTOM_color,
 				make: 3
 			}, {
 				width: w - 12,
@@ -216,17 +205,15 @@ addEventListener("keydown", e => {
 				y: -(h-12)/2 + 15 + 4,
 				fontSize: 30,
 				text: prompt("Название вентиля (позже его можно изменить):") || "my super logic gate",
-				color: CUSTOM_color,
+				color: logicGates.CUSTOM_color,
 				make: 3,
 				type: 3
 			}]
 		}]);
 
 		g.list[g.list.length - 1].setZIndex(0);
-	}
-
-	// S - сохранение
-	if(e.keyCode == 'S'.charCodeAt()) {
+	},
+	tryToSave() { // hotkey S
 		let bodiesToSave = JSON.parse(editor.save(0,0,1));
 		console.log(bodiesToSave);
 
@@ -253,6 +240,98 @@ addEventListener("keydown", e => {
 		customLGManager.save2localStorage(bodiesToSave, name);
 		if(!isDuplicate) customLGManager.load2dom(name);
 	}
+}
+
+var customLGs = localStorage.getItem("h336_customLogicGates");
+customLGs = customLGs ? JSON.parse(customLGs) : {}; // Объект со строками (JSON)
+
+for(let name in customLGs) customLGManager.load2dom(name);
+
+
+
+
+
+
+
+// Строитель соединений
+var lineBuilder = {
+	lines: [],
+	line(x1,y1, x2,y2, push=true) {
+		let [dx, dy] = [x2-x1, y2-y1];
+		let len = Math.hypot(dx, dy);
+		let padding = 5;
+
+		dx = dx/len * padding;
+		dy = dy/len * padding;
+
+		x1 += dx; y1 += dy;
+		x2 -= dx; y2 -= dy;
+
+		let line = new pixi.Graphics().lineStyle(2, 0x6FA55B).drawPolygon(x1,y1, x2,y2); // Темнее
+		let lineTip = new pixi.Graphics().lineStyle(2, 0x9fec83).drawPolygon(x1,y1, x2 - dx*1.5,y2 - dy*1.5); // Ярче
+		if(push) {
+			this.lines.push(line);
+			this.lines.push(lineTip);
+		}
+		g.gWorld.addChild(line);
+		g.gWorld.addChild(lineTip);
+		if(len < padding*3.5) line.alpha = lineTip.alpha = 0;
+
+		return [line, lineTip];
+	},
+	removeLines(lines=this.lines) {
+		lines.map(line => g.gWorld.removeChild(line));
+		if(lines == this.lines) this.lines = [];
+	},
+
+
+	createLines() {
+		this.removeLines();
+
+		let gates = {};
+		g.list.map(body => {
+			if(!body) return; // При удалении объекта, в g.list на его месте может появиться null!
+
+			let gateId = body.id.split('|').find(x => x.startsWith("gate")); // body.id == "platformoYmTZ:0.5,0,0,0|gatemP8P3:0|cover:0.5,500"
+			if(gateId) gates[gateId.slice(0, -2)] = body;
+		});
+
+		let buttons = g.list.filter(body => {
+			if(!body) return;
+
+			let buttonShape = body.shapes.find(shape => shape.id.startsWith("button"));
+			if(buttonShape) {
+				buttonShape.gateIds = buttonShape.id.split(':')[1].split(','); // buttonShape.id == "button:gate0.20925233411963573,gate0.5695981084388286"
+				body.buttonShape = buttonShape;
+				return true;
+			}
+		});
+
+		buttons.map(button => {
+			button.buttonShape.gateIds.map(gateId => {
+				let gate = gates[gateId];
+				if(gate) this.line(button.getX(), button.getY(), gate.getX(), gate.getY());
+			})
+		});
+	}
+};
+
+
+
+
+
+addEventListener("keydown", e => {
+	if(document.activeElement != document.body) return;
+
+	if(e.keyCode == 'F'.charCodeAt()) customLGManager.createFrame(); // F = выделение в рамочку :3
+	if(e.keyCode == 'S'.charCodeAt()) customLGManager.tryToSave(); // S - сохранение
+
+	if(e.keyCode == 'V'.charCodeAt() && !e.ctrlKey && !e.repeat) lineBuilder.createLines(); // Зажать V - показать соединения
+});
+addEventListener("keyup", e => {
+	if(document.activeElement != document.body) return;
+
+	if(e.keyCode == 'V'.charCodeAt()) lineBuilder.removeLines();
 });
 
 
