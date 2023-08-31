@@ -5,7 +5,7 @@
 		console.log(e.ctrlKey ? editor.save(0,0,1) : JSON.stringify(JSON.parse(editor.save(0,0,1)), null, '\t'));
 	} else {
 		console.log(window.obj = editor.selectedShapesList[0]);
-		console.log("obj.shapes[0].getColor() == ", obj.shapes[0].getColor());
+		window.obj && console.log("obj.shapes[0].getColor() == ", obj.shapes[0].getColor());
 	}
 }
 onbeforeunload = () => 1;
@@ -117,10 +117,9 @@ var logicGateLinker = {
 		return g.list[g.list.length - 2].shapes[2]; // Я не могу просто вернуть btn.shapes[2], потому что мне нужна кнопка, загруженная В МИР (p.s. и я беру length-2 вместо length-1, потому что последним элементом g.list будет handle, а не кнопка, как ты мог подумать)
 	}
 }
-
+addEventListener("mousemove", () => logicGateLinker.mousemove());
 var button = (x, y) => ({x,y,angle:0,mass:0,id:"",shapes:[{x:0,y:0,width:20,height:13,angle:0,radius:10,alpha:1,id:"",collision:!1,color:"0xff0000",fontSize:"",text:"",make:3,type:1},{x:-.5277872085571302,y:6.614923477172852,width:34,height:9,angle:0,radius:17,alpha:1,id:"",collision:!1,color:"0x535353",fontSize:"",text:"",make:3,type:1},{x:-.5690336227416992,y:-4.433515295386314,width:34,height:30,angle:0,radius:50,alpha:.2,id:"button:",collision:!1,color:"0x000000",fontSize:"",text:"",make:1,type:1}]});
 
-addEventListener("mousemove", () => logicGateLinker.mousemove());
 
 
 
@@ -135,8 +134,8 @@ var logicGates = {
 	CUSTOM_color: "0x75e1cf",
 
 
-	OR (invA, invB, color=this.OR_color,  text="OR") {return [{x:0,y:0,angle:0,mass:0,id:"",shapes:[{x:0,y:0,width:90,height:95,angle:0,radius:40,alpha:1,id:"",collision:!1,color,fontSize:"",text:"",make:3,type:1}]},{x:0,y:0,angle:0,mass:0,id:"",shapes:[{x:0,y:0,width:80,height:85,angle:0,radius:35,alpha:1,id:"",collision:!1,color:"0xffffff",fontSize:"",text:"",make:3,type:1}]},{x:0,y:29,angle:0,mass:0,id:"",shapes:[{x:0,y:0,width:20,height:13,angle:0,radius:10,alpha:1,id:"",collision:!1,color:"0xff0000",fontSize:"",text:"",make:3,type:1},{x:-.5277872085571302,y:6.614923477172852,width:34,height:9,angle:0,radius:17,alpha:1,id:"",collision:!1,color:"0x535353",fontSize:"",text:"",make:3,type:1},{x:-.5690336227416992,y:-4.433515295386314,width:34,height:30,angle:0,radius:50,alpha:.2,id:"button:gateOUTPUT",collision:!1,color:"0x00ff00",fontSize:"",text:"",make:1,type:1}]},{x:10.999999940395355,y:-.9999999776482582,angle:0,mass:0,id:`gateINPUT2:${1-invB}`,shapes:[{x:0,y:0,width:20,height:30,angle:0,radius:50,alpha:1,id:"",collision:!1,color,fontSize:"",text:"",make:1,type:1}]},{x:-10.999999940395355,y:-.9999999776482582,angle:0,mass:0,id:`gateINPUT1:${1-invA}`,shapes:[{x:0,y:0,width:20,height:30,angle:0,radius:50,alpha:1,id:"",collision:!1,color,fontSize:"",text:"",make:1,type:1}]},{x:0,y:-30,angle:0,mass:0,id:"",shapes:[{x:0,y:0,width:39,height:29,angle:0,radius:19.5,alpha:1,id:"",collision:!1,color,fontSize:26,text,make:3,type:3}]}]},
-	AND(invA, invB, color=this.AND_color, text="AND", rnd=Math.random()) {return [{x:0,y:0,angle:0,mass:0,id:"",shapes:[{x:0,y:0,width:100,height:95,angle:0,radius:50,alpha:1,id:"",collision:!1,color,fontSize:"",text:"",make:3,type:1}]},{x:0,y:0,angle:0,mass:0,id:"",shapes:[{x:0,y:0,width:90,height:85,angle:0,radius:45,alpha:1,id:"",collision:!1,color:"0xffffff",fontSize:"",text:"",make:3,type:1}]},{x:-19.481326639652252,y:28,angle:0,mass:0,id:"",shapes:[{x:0,y:0,width:20,height:13,angle:0,radius:10,alpha:1,id:"",collision:!1,color:"0xff0000",fontSize:"",text:"",make:3,type:1},{x:-.5277872085571302,y:6.614923477172852,width:34,height:9,angle:0,radius:17,alpha:1,id:"",collision:!1,color:"0x535353",fontSize:"",text:"",make:3,type:1},{x:-.5690336227416992,y:-4.433515295386314,width:34,height:30,angle:0,radius:50,alpha:.8,id:`button:gate${rnd}`,collision:!1,color:"0x000000",fontSize:"",text:"",make:1,type:1}]},{x:20.518673956394196,y:28,angle:0,mass:0,id:`gate${rnd}:1`,shapes:[{x:0,y:0,width:20,height:13,angle:0,radius:10,alpha:1,id:"",collision:!1,color:"0xff0000",fontSize:"",text:"",make:3,type:1},{x:-.5277872085571302,y:6.614923477172852,width:34,height:9,angle:0,radius:17,alpha:1,id:"",collision:!1,color:"0x535353",fontSize:"",text:"",make:3,type:1},{x:-.5690336227416992,y:-4.433515295386314,width:34,height:30,angle:0,radius:50,alpha:.2,id:"button:gateOUTPUT",collision:!1,color:"0x00ff00",fontSize:"",text:"",make:1,type:1}]},{x:-19.481326639652252,y:-1.070539653301239,angle:0,mass:0,id:`gateINPUT1:${1-invA}`,shapes:[{x:0,y:0,width:20,height:30,angle:0,radius:50,alpha:1,id:"",collision:!1,color,fontSize:"",text:"",make:1,type:1}]},{x:20.518673956394196,y:-1.070539653301239,angle:0,mass:0,id:`gateINPUT2:${1-invB}`,shapes:[{x:0,y:0,width:20,height:30,angle:0,radius:50,alpha:1,id:"",collision:!1,color,fontSize:"",text:"",make:1,type:1}]},{x:0,y:-30,angle:0,mass:0,id:"",shapes:[{x:0,y:0,width:55,height:29,angle:0,radius:27.5,alpha:1,id:"",collision:!1,color,fontSize:26,text,make:3,type:3}]}]},
+	OR (invA, invB, color=this.OR_color,  text="OR") {return [{x:0,y:0,angle:0,mass:0,id:"",shapes:[{x:0,y:0,width:90,height:95,angle:0,radius:40,alpha:1,id:"",collision:!1,color,fontSize:"",text:"",make:3,type:1},{x:0,y:0,width:80,height:85,angle:0,radius:35,alpha:1,id:"",collision:!1,color:"0xffffff",fontSize:"",text:"",make:3,type:1},{x:0,y:-30,width:39,height:29,angle:0,radius:19.5,alpha:1,id:"",collision:!1,color,fontSize:26,text,make:3,type:3}]},{x:0,y:29,angle:0,mass:0,id:"",shapes:[{x:0,y:0,width:20,height:13,angle:0,radius:10,alpha:1,id:"",collision:!1,color:"0xff0000",fontSize:"",text:"",make:3,type:1},{x:-.5690336227416992,y:-4.433515295386314,width:34,height:30,angle:0,radius:50,alpha:.2,id:"button:gateOUTPUT",collision:!1,color:"0x00ff00",fontSize:"",text:"",make:1,type:1}]},{x:-10.999999940395355,y:-.9999999776482582,angle:0,mass:0,id:`gateINPUT1:${1-invA}`,shapes:[{x:0,y:0,width:20,height:30,angle:0,radius:50,alpha:1,id:"",collision:!1,color,fontSize:"",text:"",make:1,type:1}]},{x:10.999999940395355,y:-.9999999776482582,angle:0,mass:0,id:`gateINPUT2:${1-invB}`,shapes:[{x:0,y:0,width:20,height:30,angle:0,radius:50,alpha:1,id:"",collision:!1,color,fontSize:"",text:"",make:1,type:1}]}]},
+	AND(invA, invB, color=this.AND_color, text="AND", rnd=Math.random()) {return [{x:0,y:0,angle:0,mass:0,id:"",shapes:[{x:0,y:0,width:100,height:95,angle:0,radius:50,alpha:1,id:"",collision:!1,color,fontSize:"",text:"",make:3,type:1},{x:0,y:0,width:90,height:85,angle:0,radius:45,alpha:1,id:"",collision:!1,color:"0xffffff",fontSize:"",text:"",make:3,type:1},{x:0,y:-30,width:55,height:29,angle:0,radius:27.5,alpha:1,id:"",collision:!1,color,fontSize:26,text,make:3,type:3}]},{x:-19.481326639652252,y:28,angle:0,mass:0,id:"",shapes:[{x:0,y:0,width:20,height:13,angle:0,radius:10,alpha:1,id:"",collision:!1,color:"0xff0000",fontSize:"",text:"",make:3,type:1},{x:-.5690336227416992,y:-4.433515295386314,width:34,height:30,angle:0,radius:50,alpha:.8,id:`button:gate${rnd}`,collision:!1,color:"0x000000",fontSize:"",text:"",make:1,type:1}]},{x:20.518673956394196,y:28,angle:0,mass:0,id:`gate${rnd}:1`,shapes:[{x:0,y:0,width:20,height:13,angle:0,radius:10,alpha:1,id:"",collision:!1,color:"0xff0000",fontSize:"",text:"",make:3,type:1},{x:-.5690336227416992,y:-4.433515295386314,width:34,height:30,angle:0,radius:50,alpha:.2,id:"button:gateOUTPUT",collision:!1,color:"0x00ff00",fontSize:"",text:"",make:1,type:1}]},{x:-19.481326639652252,y:-1.070539653301239,angle:0,mass:0,id:`gateINPUT1:${1-invA}`,shapes:[{x:0,y:0,width:20,height:30,angle:0,radius:50,alpha:1,id:"",collision:!1,color,fontSize:"",text:"",make:1,type:1}]},{x:20.518673956394196,y:-1.070539653301239,angle:0,mass:0,id:`gateINPUT2:${1-invB}`,shapes:[{x:0,y:0,width:20,height:30,angle:0,radius:50,alpha:1,id:"",collision:!1,color,fontSize:"",text:"",make:1,type:1}]}];},
 	XOR(inv,        color=this.XOR_color, text="XOR") {
 		let r1 = Math.random();
 		let r2 = Math.random();
@@ -144,11 +143,10 @@ var logicGates = {
 		let r4 = Math.random();
 		let r5 = Math.random();
 
-		return [{x:0,y:0,angle:0,mass:0,id:"",shapes:[{x:0,y:0,width:180,height:120,angle:0,radius:90,alpha:1,id:"",collision:!1,color,fontSize:"",text:"",make:3,type:1}]},{x:0,y:0,angle:0,mass:0,id:"",shapes:[{x:0,y:0,width:170,height:110.00000000000001,angle:0,radius:85,alpha:1,id:"",collision:!1,color:"0xffffff",fontSize:"",text:"",make:3,type:1}]},{x:-25.05776286125183,y:-.9514358825981617,angle:0,mass:0,id:`gate${r1}:0`,shapes:[{x:0,y:0,width:30,height:20,angle:0,radius:50,alpha:1,id:"",collision:!1,color,fontSize:"",text:"",make:1,type:1}]},{x:-61.75079345703125,y:-3.5435903817415237,angle:0,mass:0,id:"",shapes:[{x:0,y:0,width:20,height:13,angle:0,radius:10,alpha:1,id:"",collision:!1,color:"0xff0000",fontSize:"",text:"",make:3,type:1},{x:-.5277872085571302,y:6.614923477172852,width:34,height:9,angle:0,radius:17,alpha:1,id:"",collision:!1,color:"0x535353",fontSize:"",text:"",make:3,type:1},{x:-.5690336227416992,y:-4.433515295386314,width:34,height:30,angle:0,radius:50,alpha:.8,id:`button:gate${r2},gate${r4}`,collision:!1,color:"0x000000",fontSize:"",text:"",make:1,type:1}]},{x:-100.51002502441406,y:-7.384967058897018,angle:0,mass:0,id:"gateINPUT1:1",shapes:[{x:0,y:0,width:50,height:20,angle:0,radius:50,alpha:1,id:"",collision:!1,color,fontSize:"",text:"",make:1,type:1}]},{x:-60.87098717689514,y:40.24655222892761,angle:0,mass:0,id:"",shapes:[{x:0,y:0,width:20,height:13,angle:0,radius:10,alpha:1,id:"",collision:!1,color:"0xff0000",fontSize:"",text:"",make:3,type:1},{x:-.5277872085571302,y:6.614923477172852,width:34,height:9,angle:0,radius:17,alpha:1,id:"",collision:!1,color:"0x535353",fontSize:"",text:"",make:3,type:1},{x:-.5690336227416992,y:-4.433515295386314,width:34,height:30,angle:0,radius:50,alpha:.8,id:`button:gate${r1},gate${r2}`,collision:!1,color:"0x000000",fontSize:"",text:"",make:1,type:1}]},{x:-100.54847002029419,y:35.53915619850159,angle:0,mass:0,id:"gateINPUT2:1",shapes:[{x:0,y:0,width:50,height:20,angle:0,radius:50,alpha:1,id:"",collision:!1,color,fontSize:"",text:"",make:1,type:1}]},{x:1.2687081471085548,y:4.212365671992302,angle:0,mass:0,id:`gate${r2}:1`,shapes:[{x:0,y:0,width:20,height:13,angle:0,radius:10,alpha:1,id:"",collision:!1,color:"0xff0000",fontSize:"",text:"",make:3,type:1},{x:-.5277872085571302,y:6.614923477172852,width:34,height:9,angle:0,radius:17,alpha:1,id:"",collision:!1,color:"0x535353",fontSize:"",text:"",make:3,type:1},{x:-.5690336227416992,y:-4.433515295386314,width:34,height:30,angle:0,radius:50,alpha:.8,id:`button:gate${r5}`,collision:!1,color:"0x000000",fontSize:"",text:"",make:1,type:1}]},{x:-24.875442683696747,y:31.600970029830933,angle:0,mass:0,id:`gate${r4}:0`,shapes:[{x:0,y:0,width:30,height:20,angle:0,radius:50,alpha:1,id:"",collision:!1,color,fontSize:"",text:"",make:1,type:1}]},{x:1.3129345141351223,y:37.01865077018738,angle:0,mass:0,id:`gate${r2}:1`,shapes:[{x:0,y:0,width:20,height:13,angle:0,radius:10,alpha:1,id:"",collision:!1,color:"0xff0000",fontSize:"",text:"",make:3,type:1},{x:-.5277872085571302,y:6.614923477172852,width:34,height:9,angle:0,radius:17,alpha:1,id:"",collision:!1,color:"0x535353",fontSize:"",text:"",make:3,type:1},{x:-.5690336227416992,y:-4.433515295386314,width:34,height:30,angle:0,radius:50,alpha:.8,id:`button:gate${r5}`,collision:!1,color:"0x000000",fontSize:"",text:"",make:1,type:1}]},{x:37.16868758201599,y:16.012029349803925,angle:0,mass:0,id:`gate${r5}:${1-inv}`,shapes:[{x:0,y:0,width:30,height:20,angle:0,radius:50,alpha:1,id:"",collision:!1,color,fontSize:"",text:"",make:1,type:1}]},{x:63.06765675544739,y:19.360949099063873,angle:0,mass:0,id:"",shapes:[{x:0,y:0,width:20,height:13,angle:0,radius:10,alpha:1,id:"",collision:!1,color:"0xff0000",fontSize:"",text:"",make:3,type:1},{x:-.5277872085571302,y:6.614923477172852,width:34,height:9,angle:0,radius:17,alpha:1,id:"",collision:!1,color:"0x535353",fontSize:"",text:"",make:3,type:1},{x:-.5690336227416992,y:-4.433515295386314,width:34,height:30,angle:0,radius:50,alpha:.2,id:"button:gateOUTPUT",collision:!1,color:"0x00ff00",fontSize:"",text:"",make:1,type:1}]},{x:.8945397101342678,y:-38.056010007858276,angle:0,mass:0,id:"",shapes:[{x:0,y:0,width:57,height:29,angle:0,radius:28.5,alpha:1,id:"",collision:!1,color,fontSize:26,text,make:3,type:3}]}];
+		return [{x:0,y:0,angle:0,mass:0,id:"",shapes:[{x:0,y:0,width:180,height:120,angle:0,radius:90,alpha:1,id:"",collision:!1,color,fontSize:"",text:"",make:3,type:1},{x:0,y:0,width:170,height:110.00000000000001,angle:0,radius:85,alpha:1,id:"",collision:!1,color:"0xffffff",fontSize:"",text:"",make:3,type:1},{x:0,y:-38,width:57,height:29,angle:0,radius:28.5,alpha:1,id:"",collision:!1,color,fontSize:26,text,make:3,type:3}]},{x:-25.05776286125183,y:-.9514358825981617,angle:0,mass:0,id:`gate${r1}:0`,shapes:[{x:0,y:0,width:30,height:20,angle:0,radius:50,alpha:1,id:"",collision:!1,color,fontSize:"",text:"",make:1,type:1}]},{x:-61.75079345703125,y:-3.5435903817415237,angle:0,mass:0,id:"",shapes:[{x:0,y:0,width:20,height:13,angle:0,radius:10,alpha:1,id:"",collision:!1,color:"0xff0000",fontSize:"",text:"",make:3,type:1},{x:-.5690336227416992,y:-4.433515295386314,width:34,height:30,angle:0,radius:50,alpha:.8,id:`button:gate${r2},gate${r4}`,collision:!1,color:"0x000000",fontSize:"",text:"",make:1,type:1}]},{x:-100.51002502441406,y:-7.384967058897018,angle:0,mass:0,id:"gateINPUT1:1",shapes:[{x:0,y:0,width:50,height:20,angle:0,radius:50,alpha:1,id:"",collision:!1,color,fontSize:"",text:"",make:1,type:1}]},{x:-60.87098717689514,y:40.24655222892761,angle:0,mass:0,id:"",shapes:[{x:0,y:0,width:20,height:13,angle:0,radius:10,alpha:1,id:"",collision:!1,color:"0xff0000",fontSize:"",text:"",make:3,type:1},{x:-.5690336227416992,y:-4.433515295386314,width:34,height:30,angle:0,radius:50,alpha:.8,id:`button:gate${r1},gate${r2}`,collision:!1,color:"0x000000",fontSize:"",text:"",make:1,type:1}]},{x:-100.54847002029419,y:35.53915619850159,angle:0,mass:0,id:"gateINPUT2:1",shapes:[{x:0,y:0,width:50,height:20,angle:0,radius:50,alpha:1,id:"",collision:!1,color,fontSize:"",text:"",make:1,type:1}]},{x:1.2687081471085548,y:4.212365671992302,angle:0,mass:0,id:`gate${r2}:1`,shapes:[{x:0,y:0,width:20,height:13,angle:0,radius:10,alpha:1,id:"",collision:!1,color:"0xff0000",fontSize:"",text:"",make:3,type:1},{x:-.5690336227416992,y:-4.433515295386314,width:34,height:30,angle:0,radius:50,alpha:.8,id:`button:gate${r5}`,collision:!1,color:"0x000000",fontSize:"",text:"",make:1,type:1}]},{x:-24.875442683696747,y:31.600970029830933,angle:0,mass:0,id:`gate${r4}:0`,shapes:[{x:0,y:0,width:30,height:20,angle:0,radius:50,alpha:1,id:"",collision:!1,color,fontSize:"",text:"",make:1,type:1}]},{x:1.3129345141351223,y:37.01865077018738,angle:0,mass:0,id:`gate${r2}:1`,shapes:[{x:0,y:0,width:20,height:13,angle:0,radius:10,alpha:1,id:"",collision:!1,color:"0xff0000",fontSize:"",text:"",make:3,type:1},{x:-.5690336227416992,y:-4.433515295386314,width:34,height:30,angle:0,radius:50,alpha:.8,id:`button:gate${r5}`,collision:!1,color:"0x000000",fontSize:"",text:"",make:1,type:1}]},{x:37.16868758201599,y:16.012029349803925,angle:0,mass:0,id:`gate${r5}:${1-inv}`,shapes:[{x:0,y:0,width:30,height:20,angle:0,radius:50,alpha:1,id:"",collision:!1,color,fontSize:"",text:"",make:1,type:1}]},{x:63.06765675544739,y:19.360949099063873,angle:0,mass:0,id:"",shapes:[{x:0,y:0,width:20,height:13,angle:0,radius:10,alpha:1,id:"",collision:!1,color:"0xff0000",fontSize:"",text:"",make:3,type:1},{x:-.5690336227416992,y:-4.433515295386314,width:34,height:30,angle:0,radius:50,alpha:.2,id:"button:gateOUTPUT",collision:!1,color:"0x00ff00",fontSize:"",text:"",make:1,type:1}]}];
 	},
-	NOT(color=this.NOT_color) {return [{x:0,y:0,angle:0,mass:0,id:"",shapes:[{x:0,y:0,width:90,height:70,angle:0,radius:45,alpha:1,id:"",collision:!1,color:color,fontSize:"",text:"",make:3,type:1}]},{x:0,y:0,angle:0,mass:0,id:"",shapes:[{x:0,y:0,width:80,height:60.00000000000001,angle:0,radius:40,alpha:1,id:"",collision:!1,color:"0xffffff",fontSize:"",text:"",make:3,type:1}]},{x:11.290519684553146,y:16.015052795410156,angle:0,mass:0,id:"",shapes:[{x:0,y:0,width:20,height:13,angle:0,radius:10,alpha:1,id:"",collision:!1,color:"0xff0000",fontSize:"",text:"",make:3,type:1},{x:-.5277872085571302,y:6.614923477172852,width:34,height:9,angle:0,radius:17,alpha:1,id:"",collision:!1,color:"0x535353",fontSize:"",text:"",make:3,type:1},{x:-.5690336227416992,y:-4.433515295386314,width:34,height:30,angle:0,radius:50,alpha:.2,id:"button:gateOUTPUT",collision:!1,color:"0x00ff00",fontSize:"",text:"",make:1,type:1}]},{x:-15.306521952152252,y:11.85791864991188,angle:0,mass:0,id:"gateINPUT1:0",shapes:[{x:0,y:0,width:30,height:20,angle:0,radius:50,alpha:1,id:"",collision:!1,color:color,fontSize:"",text:"",make:1,type:1}]},{x:0,y:-15.50000011920929,angle:0,mass:0,id:"",shapes:[{x:0,y:0,width:55,height:29,angle:0,radius:27.5,alpha:1,id:"",collision:!1,color:color,fontSize:26,text:"NOT",make:3,type:3}]}]},
-
-	INP(color=this.CUSTOM_color) {return [{x:19.478538632392883,y:4.63055856525898,angle:0,mass:0,id:"",shapes:[{x:0,y:0,width:20,height:13,angle:0,radius:10,alpha:1,id:"",collision:!1,color:"0xff0000",fontSize:"",text:"",make:3,type:1},{x:-.5277872085571302,y:6.614923477172852,width:34,height:9,angle:0,radius:17,alpha:1,id:"",collision:!1,color:"0x535353",fontSize:"",text:"",make:3,type:1},{x:-.5690336227416992,y:-4.433515295386314,width:34,height:30,angle:0,radius:50,alpha:.8,id:"button:",collision:!1,color:"0x000000",fontSize:"",text:"",make:1,type:1}]},{x:-12.105007469654083,y:.07949257269501686,angle:0,mass:0,id:"gateINPUT:1",shapes:[{x:0,y:0,width:50,height:20,angle:0,radius:50,alpha:1,id:"",collision:!1,color,fontSize:"",text:"",make:1,type:1}]}]},
+	NOT(color=this.NOT_color) {return [{x:0,y:0,angle:0,mass:0,id:"",shapes:[{x:0,y:0,width:90,height:70,angle:0,radius:45,alpha:1,id:"",collision:!1,color,fontSize:"",text:"",make:3,type:1},{x:0,y:0,width:80,height:60.00000000000001,angle:0,radius:40,alpha:1,id:"",collision:!1,color:"0xffffff",fontSize:"",text:"",make:3,type:1},{x:0,y:-15.5,width:55,height:29,angle:0,radius:27.5,alpha:1,id:"",collision:!1,color,fontSize:26,text:"NOT",make:3,type:3}]},{x:11.290519684553146,y:16.015052795410156,angle:0,mass:0,id:"",shapes:[{x:0,y:0,width:20,height:13,angle:0,radius:10,alpha:1,id:"",collision:!1,color:"0xff0000",fontSize:"",text:"",make:3,type:1},{x:-.5690336227416992,y:-4.433515295386314,width:34,height:30,angle:0,radius:50,alpha:.2,id:"button:gateOUTPUT",collision:!1,color:"0x00ff00",fontSize:"",text:"",make:1,type:1}]},{x:-15.306521952152252,y:11.85791864991188,angle:0,mass:0,id:"gateINPUT1:0",shapes:[{x:0,y:0,width:30,height:20,angle:0,radius:50,alpha:1,id:"",collision:!1,color,fontSize:"",text:"",make:1,type:1}]}]},
+	INP(color=this.CUSTOM_color) {return [{x:19.478538632392883,y:4.63055856525898,angle:0,mass:0,id:"",shapes:[{x:0,y:0,width:20,height:13,angle:0,radius:10,alpha:1,id:"",collision:!1,color:"0xff0000",fontSize:"",text:"",make:3,type:1},{x:-.5690336227416992,y:-4.433515295386314,width:34,height:30,angle:0,radius:50,alpha:.8,id:"button:",collision:!1,color:"0x000000",fontSize:"",text:"",make:1,type:1}]},{x:-12.105007469654083,y:.07949257269501686,angle:0,mass:0,id:"gateINPUT:1",shapes:[{x:0,y:0,width:50,height:20,angle:0,radius:50,alpha:1,id:"",collision:!1,color,fontSize:"",text:"",make:1,type:1}]}]},
 
 
 	/* OR */    9() {return this.OR(0,0)},
@@ -160,7 +158,6 @@ var logicGates = {
 	/* XNOR */ 14() {return this.XOR(1, this.XNOR_color, "XNOR")},
 
 	/* NOT */  15() {return this.NOT()},
-
 	/* inp */  16() {return this.INP()}
 }
 
@@ -181,17 +178,18 @@ var customLGManager = {
 
 		logicGates[N] = () => {
 			let bodiesStr = customLGs[name];
+			// Регэксп /gate[\w.]+/g заменяет ещё и gateINPUT и gateOUTPUT, а это, вроде, не то что мне нужно :с
 			[...new Set(bodiesStr.match(/gate0\.\d+/g))].map(x => bodiesStr = bodiesStr.replace(new RegExp(x.replace('.', '\\.'), 'g'), `gate${Math.random()}`)); // Нужно все айдишники вида 'gate0.9510369393830014' перегенерировать (т.е. дать другое случайное имя)
 			return JSON.parse(bodiesStr);
 		}
 	},
 	save2localStorage(bodiesStr, name) {
-		customLGs[name] = bodiesStr;
+		if(bodiesStr) customLGs[name] = bodiesStr;
 		localStorage.setItem("h336_customLogicGates", JSON.stringify(customLGs));
 	},
 
 
-	createFrame() { // hotkey F
+	createFrame(secretParameters) { // hotkey F
 		if(!editor.selectRectangle) return;
 
 		let {x, y, width: w, height: h} = editor.selectRectangle;
@@ -202,6 +200,14 @@ var customLGManager = {
 		w = Math.abs(w);
 		h = Math.abs(h);
 
+		let text = prompt("Название вентиля (позже его можно изменить):") || "my super logic gate";
+		let thickness = 15;
+		let fontSize = 30;
+		if(secretParameters) {
+			thickness = +prompt("Толщина рамки:", thickness);
+			fontSize = +prompt("Размер шрифта:", fontSize);
+		}
+
 		editor.loadMap([{
 			x, y,
 			id: "logicGateFrame",
@@ -211,14 +217,14 @@ var customLGManager = {
 				color: logicGates.CUSTOM_color,
 				make: 3
 			}, {
-				width: w - 12,
-				height: h - 12,
+				width: w - 2 - thickness,
+				height: h - 2 - thickness,
 				color: "0xffffff",
 				make: 3
 			}, {
-				y: -(h-12)/2 + 15 + 4,
-				fontSize: 30,
-				text: prompt("Название вентиля (позже его можно изменить):") || "my super logic gate",
+				y: -(h-2-thickness)/2 + fontSize/2 + 4,
+				fontSize,
+				text,
 				color: logicGates.CUSTOM_color,
 				make: 3,
 				type: 3
@@ -253,6 +259,25 @@ var customLGManager = {
 		bodiesToSave = JSON.stringify(bodiesToSave);
 		customLGManager.save2localStorage(bodiesToSave, name);
 		if(!isDuplicate) customLGManager.load2dom(name);
+	},
+	tryToDelete() { // hotkey D
+		let bodies = JSON.parse(editor.save(0,0,1));
+		console.log(bodies);
+
+		let frame = bodies.findIndex(x => x.id == "logicGateFrame");
+		if(frame == -1) return alert("ОШИБКА: нет рамки.\nЧтобы удалить вентиль, надо выделить его вместе с рамкой (чтобы получить название)");
+		if(frame != 0) return alert("ОШИБКА: рамка должна быть ниже всего остального по z-index'у (проще говоря, у вас есть что-то под рамкой).")
+		frame = bodies[frame];
+
+		let name = frame.shapes[2].text;
+		if(!customLGs[name]) return alert(`ПРЕДУПРЕЖДЕНИЕ: вентиля с именем '${name}' не существует...`);
+
+		let ans = confirm(`Удалить вентиль '${name}' из сохранённых?`);
+		if(ans) {
+			delete customLGs[name];
+			customLGManager.save2localStorage();
+			[...toolsContainer.children].map(elem => elem.innerText == name && elem.remove());
+		}
 	}
 }
 
@@ -307,50 +332,50 @@ var lineBuilder = {
 			if(!body) return; // При удалении объекта, в g.list на его месте может появиться null!
 
 			let gateId = body.id.split('|').find(x => x.startsWith("gate")); // body.id == "platformoYmTZ:0.5,0,0,0|gatemP8P3:0|cover:0.5,500"
-			if(gateId) gates[gateId.slice(0, -2)] = body;
+			if(!gateId) return;
+
+			gateId = gateId.slice(0, -2);
+			if(!gates[gateId]) gates[gateId] = [];
+			gates[gateId].push(body);
 		});
 		g.list.map(body => {
 			if(!body) return;
 
 			let pltId = body.id.split('|').find(x => x.startsWith("platform"));
-			if(pltId) platforms[pltId.split(':')[0]] = body;
+			if(!pltId) return;
+
+			pltId = pltId.split(':')[0];
+			if(!platforms[pltId]) platforms[pltId] = [];
+			platforms[pltId].push(body);
 		});
 
 
-		let buttons = g.list.filter(body => {
+		g.list.map(body => { // buttons
 			if(!body) return;
 
 			let buttonShape = body.shapes.find(shape => shape.id.startsWith("button"));
-			if(buttonShape) {
-				buttonShape.gateIds = buttonShape.id.split(':')[1].split(','); // buttonShape.id == "button:gate0.20925233411963573,gate0.5695981084388286"
-				body.buttonShape = buttonShape;
-				return true;
-			}
+			if(!buttonShape) return;
+
+			let gateIds = buttonShape.id.split(':')[1].split(','); // buttonShape.id == "button:gate0.20925233411963573,gate0.5695981084388286"
+			gateIds.map(gateId => {
+				(gates[gateId] || []).map(gate => {
+					this.line(body.getX(), body.getY(), gate.getX(), gate.getY());
+				})
+			})
 		});
-		let levers = g.list.filter(body => {
+		g.list.map(body => { // levers
 			if(!body) return;
 
 			let leverShape = body.shapes.find(shape => shape.id.startsWith("leaver"));
-			if(leverShape) {
-				leverShape.pltIds = leverShape.id.split(':')[1].split(',');
-				body.leverShape = leverShape;
-				return true;
-			}
-		});
+			if(!leverShape) return;
 
-
-		buttons.map(button => {
-			button.buttonShape.gateIds.map(gateId => {
-				let gate = gates[gateId];
-				if(gate) this.line(button.getX(), button.getY(), gate.getX(), gate.getY());
+			let pltIds = leverShape.id.split(':')[1].split(',');
+			pltIds.map(pltId => {
+				(platforms[pltId] || []).map(plt => {
+					this.line(body.getX(), body.getY(), plt.getX(), plt.getY(), true, [0x9D4646, 0xEC8383]);
+				})
 			})
-		});
-		levers.map(lever => {
-			lever.leverShape.pltIds.map(pltId => {
-				let plt = platforms[pltId];
-				if(plt) this.line(lever.getX(), lever.getY(), plt.getX(), plt.getY(), true, [0x9D4646, 0xEC8383]);
-			})
-		});
+		})
 	}
 };
 
@@ -358,19 +383,73 @@ var lineBuilder = {
 
 
 
+
+var colorChanger = {
+	elem: document.createElement("input"),
+	init() {
+		this.elem.type = "color";
+		this.elem.title = "Изменить цвет следующего кастомного компонента (C - перекрасить инпут/рамку, Shift+C - загрузить цвет первого шейпа в кнопку)";
+		this.elem.value = logicGates.CUSTOM_color.replace("0x", '#');
+		Object.assign(this.elem.style, {
+			position: "absolute",
+			bottom: "3px",
+			right: "3px",
+			zIndex: 1
+		});
+		this.elem.oninput = () => logicGates.CUSTOM_color = this.elem.value.replace('#', "0x");
+		document.body.appendChild(this.elem);
+	},
+
+	setColor(shape) {
+		shape.setColor(logicGates.CUSTOM_color);
+		editor.attachInteraction(shape.refP);
+		return shape.refP;
+	},
+
+	setInpOrFrameColor(obj) {
+		if(obj.id.startsWith("logicGateFrame")) {
+			obj = colorChanger.setColor(obj.shapes[0]);
+			obj = colorChanger.setColor(obj.shapes[2]);
+			obj.setZIndex(0);
+		} else {
+			obj = colorChanger.setColor(obj.shapes[0]);
+		}
+	},
+	loadColorToButton(obj) {
+		colorChanger.elem.value = obj.shapes[0].getColor().replace("0x", '#');
+		colorChanger.elem.oninput();
+	}
+}
+colorChanger.init();
+
+
+
 addEventListener("keydown", e => {
 	if(document.activeElement != document.body) return;
 
-	if(e.keyCode == 'F'.charCodeAt()) customLGManager.createFrame(); // F = выделение в рамочку :3
+	if(e.keyCode == 'F'.charCodeAt()) customLGManager.createFrame(e.shiftKey); // F = выделение в рамочку :3
 	if(e.keyCode == 'S'.charCodeAt()) customLGManager.tryToSave(); // S - сохранение
+	if(e.keyCode == 'D'.charCodeAt()) customLGManager.tryToDelete(); // D - удаление
 
 	if(e.keyCode == 'V'.charCodeAt() && !e.ctrlKey && !e.repeat) lineBuilder.createLines(); // Зажать V - показать соединения
+
+	if(e.keyCode == 'C'.charCodeAt()) { // C - перекрасить вход/рамку в CUSTOM_color
+		let obj = editor.selectedShapesList[0];
+		if(obj) {
+			if(e.shiftKey) { // Shift+C = загрузить цвет в кнопку
+				colorChanger.loadColorToButton(obj);
+			} else {
+				colorChanger.setInpOrFrameColor(obj);
+			}
+		}
+	}
 });
 addEventListener("keyup", e => {
 	if(document.activeElement != document.body) return;
 
 	if(e.keyCode == 'V'.charCodeAt()) lineBuilder.removeLines();
 });
+
 
 
 
@@ -1287,6 +1366,18 @@ addEventListener("keyup", e => {
 			e.enableUpDown = t.enableUpDown || 1,
 			e.setAttribute("id", "inputField"),
 			e.onchange = function() {
+				// note: неудачная попытка сделать так, чтобы при изменении цвета рамки/текста, менялись ВСЕ цвета
+				/*if(this.ref.refP.id == "logicGateFrame" && this.propertyName == "color") {
+					let color = e.value.replace("#", "0x");
+					console.log(color);
+
+					this.ref.refP.shapes[0].setColor(color);
+					this.ref.refP.shapes[2].setColor(color);
+					a.attachInteraction(this.ref.refP);
+					this.ref.refP.setZIndex(0);
+				} else {
+					this.setPropertyValue(this.propertyName, this.value)
+				}*/
 				this.setPropertyValue(this.propertyName, this.value)
 			}
 			,
