@@ -1,5 +1,12 @@
 ﻿ondblclick = () => player1.gpData.p.world.bodies.map(x => x.ref.setAlpha(.5)); // debug
 
+addEventListener("keydown", e => {
+	if(e.keyCode == 27) { // Esc = закрыть игру
+		window.iframeClose.click();
+		window.parent.focus();
+	}
+});
+
 !function r(i, o, s) {
 	function a(e, t) {
 		if (!o[e]) {
@@ -373,15 +380,15 @@
 			var u = n(t, "spawn")[0]
 			  , l = (void 0 !== u && u.refP.setAlpha(0),
 			e(t, "door")[0])
-			  , c = (void 0 === l && console.log("door is not present"),
+			  , c = (void 0 === l && 0/*console.log("door is not present")*/,
 			n(t, "playArea")[0])
-			  , h = (void 0 === c ? console.log("Seeker spawn is not present") : c.refP.setAlpha(0),
+			  , h = (void 0 === c ? 0/*console.log("Seeker spawn is not present")*/ : c.refP.setAlpha(0),
 			-1);
 			if (void 0 !== l && void 0 !== u)
-				console.log("it's two player adventure map"),
+				0/*console.log("it's two player adventure map")*/,
 				h = 0;
 			else if (void 0 !== c && void 0 !== u)
-				console.log("it's hide and seek map"),
+				0/*console.log("it's hide and seek map")*/,
 				h = 1;
 			else {
 				if (void 0 === u)
@@ -389,12 +396,12 @@
 					alert("Invalid Map, loading default map, PLEASE DOWN VOTE THIS MAP"),
 					tt.loadMap(nt),
 					void (h = -1);
-				console.log("it's sandbox map"),
+				0/*console.log("it's sandbox map")*/,
 				h = 2
 			}
 			for (var l = e(t, "mapCredits")[0], p = (void 0 !== l ? (l.setAlpha(0),
 			l.shapes[0].deleteMe(2),
-			console.log("credits added successfully")) : console.log("missing credits"),
+			console.log("credits added successfully")) : 0/*console.log("missing credits")*/,
 			window.currentPlayer = 0,
 			window.player = new Object,
 			!1), f = !1, d = !1, g = (player.gpData = r(),
