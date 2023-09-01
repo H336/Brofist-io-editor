@@ -1,11 +1,33 @@
-﻿ondblclick = () => player1.gpData.p.world.bodies.map(x => x.ref.setAlpha(.5)); // debug
+﻿ondblclick = () => player.gpData.p.world.bodies.map(x => x.ref.setAlpha(.5)); // debug
 
+var makeMeGhost = player => {
+	player.ghost = !player.ghost;
+
+	player.gpData.p.shapes[0].sensor = player.ghost;
+	player.gpData.p.gravityScale = player.ghost ? 0 : 1;
+	player.gpData.p.velocity[0] = player.gpData.p.velocity[1] = 0;
+}
+
+var playerSpd = 3;
+
+var jumpTimer = 0;
 addEventListener("keydown", e => {
+	if((e.keyCode == 38 || e.keyCode == 'W'.charCodeAt()) && !e.repeat) { // Двойное нажатие ↑/W - полёт
+		if(new Date - jumpTimer < 300) { // 300ms
+			makeMeGhost(currentPlayer == 0 ? player : player1);
+		}
+		jumpTimer = new Date;
+	} else jumpTimer = 0;
+
+	playerSpd = e.shiftKey ? 12 : 3;
+
 	if(e.keyCode == 27) { // Esc = закрыть игру
 		window.iframeClose.click();
 		window.parent.focus();
 	}
 });
+
+
 
 !function r(i, o, s) {
 	function a(e, t) {
@@ -483,8 +505,8 @@ addEventListener("keydown", e => {
 				moveDown1 = !1
 			})),
 			z.addLoopFunction(function(t) {
-				if (f && (player.gpData.p.velocity[0] = 3),
-				p && (player.gpData.p.velocity[0] = -3),
+				if (f && (player.gpData.p.velocity[0] = playerSpd),
+				p && (player.gpData.p.velocity[0] = -playerSpd),
 				d)
 					for (var e = player.gpData.getX(), n = player.gpData.getY(), r = player.gpData.playerShape.getWidth(), r = (player.gpData.playerShape.getHeight(),
 					+r), i = e - r / 2, o = r / 11, s = 0; s < 12; s++) {
@@ -502,10 +524,14 @@ addEventListener("keydown", e => {
 							}
 						}
 					}
+
+				player.ghost && (d && (player.gpData.p.velocity[1] = playerSpd),
+				window.moveDown && (player.gpData.p.velocity[1] = -playerSpd),
+				d || window.moveDown || (player.gpData.p.velocity[1] = 0))
 			}),
 			null != player1 && z.addLoopFunction(function(t) {
-				if (y && (player1.gpData.p.velocity[0] = 3),
-				g && (player1.gpData.p.velocity[0] = -3),
+				if (y && (player1.gpData.p.velocity[0] = playerSpd),
+				g && (player1.gpData.p.velocity[0] = -playerSpd),
 				m)
 					for (var e = player1.gpData.getX(), n = player1.gpData.getY(), r = player1.gpData.playerShape.getWidth(), r = (player1.gpData.playerShape.getHeight(),
 					+r), i = e - r / 2, o = r / 11, s = 0; s < 12; s++) {
@@ -523,6 +549,10 @@ addEventListener("keydown", e => {
 							}
 						}
 					}
+
+				player1.ghost && (m && (player1.gpData.p.velocity[1] = playerSpd),
+				window.moveDown1 && (player1.gpData.p.velocity[1] = -playerSpd),
+				m || window.moveDown1 || (player1.gpData.p.velocity[1] = 0))
 			}),
 			z.addLoopFunction(function() {
 				var t = {
