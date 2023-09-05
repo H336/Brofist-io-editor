@@ -135,6 +135,7 @@ var logicGates = {
 
 	updateSize(index) {
 		let {width: w, height: h} = this[index]()[0].shapes[0];
+		if(index == 16) [w, h] = [72, 30]; // Исключение для input (да, я знаю что это какой-то говнокод тоже, ноо я наверно потом исправлю)
 		this[index].size = {w, h};
 	},
 
@@ -152,7 +153,7 @@ var logicGates = {
 	},
 	NOT(color=this.NOT_color) {return [{x:0,y:0,angle:0,mass:0,id:"",shapes:[{x:0,y:0,width:90,height:70,angle:0,radius:45,alpha:1,id:"",collision:!1,color,fontSize:"",text:"",make:3,type:1},{x:0,y:0,width:80,height:60.00000000000001,angle:0,radius:40,alpha:1,id:"",collision:!1,color:"0xffffff",fontSize:"",text:"",make:3,type:1},{x:0,y:-15.5,width:55,height:29,angle:0,radius:27.5,alpha:1,id:"",collision:!1,color,fontSize:26,text:"NOT",make:3,type:3}]},{x:11.290519684553146,y:16.015052795410156,angle:0,mass:0,id:"",shapes:[{x:0,y:0,width:20,height:13,angle:0,radius:10,alpha:1,id:"",collision:!1,color:"0xff0000",fontSize:"",text:"",make:3,type:1},{x:-.5690336227416992,y:-4.433515295386314,width:34,height:30,angle:0,radius:50,alpha:.2,id:"button:gateOUTPUT",collision:!1,color:"0x00ff00",fontSize:"",text:"",make:1,type:1}]},{x:-15.306521952152252,y:11.85791864991188,angle:0,mass:0,id:"gateINPUT1:0",shapes:[{x:0,y:0,width:30,height:20,angle:0,radius:50,alpha:1,id:"",collision:!1,color,fontSize:"",text:"",make:1,type:1}]}]},
 	
-	inp(color=this.CUSTOM_color) {return [{x:19.478538632392883,y:4.63055856525898,angle:0,mass:0,id:"",shapes:[{x:0,y:0,width:20,height:13,angle:0,radius:10,alpha:1,id:"",collision:!1,color:"0xff0000",fontSize:"",text:"",make:3,type:1},{x:-.5690336227416992,y:-4.433515295386314,width:34,height:30,angle:0,radius:50,alpha:.2,id:"button:",collision:!1,color:"0x000000",fontSize:"",text:"",make:1,type:1}]},{x:-12.105007469654083,y:.07949257269501686,angle:0,mass:0,id:"gateINPUT:1",shapes:[{x:0,y:0,width:50,height:20,angle:0,radius:50,alpha:1,id:"",collision:!1,color,fontSize:"",text:"",make:1,type:1}]}]},
+	inp(color=this.CUSTOM_color) {return [{x:19.478538632392883,y:4.4,angle:0,mass:0,id:"",shapes:[{x:0,y:0,width:20,height:13,angle:0,radius:10,alpha:1,id:"",collision:!1,color:"0xff0000",fontSize:"",text:"",make:3,type:1},{x:-.5690336227416992,y:-4.433515295386314,width:34,height:30,angle:0,radius:50,alpha:.2,id:"button:",collision:!1,color:"0x000000",fontSize:"",text:"",make:1,type:1}]},{x:-11.105007469654083,y:.07949257269501686,angle:0,mass:0,id:"gateINPUT:1",shapes:[{x:0,y:0,width:50,height:20,angle:0,radius:50,alpha:1,id:"",collision:!1,color,fontSize:"",text:"",make:1,type:1}]}]},
 	bit() {return [{x:0,y:0,angle:0,mass:0,id:"",shapes:[{x:0,y:0,width:50,height:50,angle:0,radius:25,alpha:1,id:"",collision:!1,color:"0xff0000",fontSize:"",text:"",make:3,type:1},{x:0,y:0,width:40,height:40,angle:0,radius:20,alpha:1,id:"",collision:!1,color:"0xffffff",fontSize:"",text:"",make:3,type:1},{x:0,y:0,width:23,height:44,angle:0,radius:11.5,alpha:1,id:"",collision:!1,color:"0xff0000",fontSize:40,text:"0",make:3,type:3}]},{x:0,y:0,angle:0,mass:0,id:"",shapes:[{x:0,y:0,width:50,height:50,angle:0,radius:25,alpha:1,id:"",collision:!1,color:"0x00e100",fontSize:"",text:"",make:3,type:1},{x:0,y:0,width:40,height:40,angle:0,radius:20,alpha:1,id:"",collision:!1,color:"0xffffff",fontSize:"",text:"",make:3,type:1},{x:0,y:0,width:23,height:44,angle:0,radius:11.5,alpha:1,id:"",collision:!1,color:"0x00e100",fontSize:40,text:"1",make:3,type:3}]}]},
 
 
@@ -426,7 +427,7 @@ var colorChanger = {
 			position: "absolute",
 			bottom: "3px",
 			right: "3px",
-			zIndex: 1
+			zIndex: 0
 		});
 		this.elem.oninput = () => logicGates.CUSTOM_color = this.elem.value.replace('#', "0x");
 		document.body.appendChild(this.elem);

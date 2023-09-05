@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>Brofist.io - Editor</title>
+	<title>[H336] Brofist.io - Editor</title>
 
 	<script type="text/javascript" src="script.js" defer></script>
 	<link rel="stylesheet" type="text/css" href="editor.css">
@@ -23,16 +23,19 @@
 	<img ondragstart="return false" onclick="editor.selectItem(this, 6)" src="img/editor/checkpoint.png" />
 	<img ondragstart="return false" onclick="editor.selectItem(this, 7)" src="img/editor/door.png" />
 	<img ondragstart="return false" onclick="editor.selectItem(this, 8)" src="img/editor/seeker.png" />
-	<div onclick="editor.selectItem(this, 9)">OR</div>
-	<div onclick="editor.selectItem(this, 10)">AND</div>
-	<div onclick="editor.selectItem(this, 11)">NOR</div>
-	<div onclick="editor.selectItem(this, 12)">NAND</div>
-	<div onclick="editor.selectItem(this, 13)">XOR</div>
-	<div onclick="editor.selectItem(this, 14)">XNOR</div>
-	<div onclick="editor.selectItem(this, 15)">NOT</div>
+
+	<div title="0111 | ИЛИ"                onclick="editor.selectItem(this, 9)">OR</div>
+	<div title="0001 | И"                  onclick="editor.selectItem(this, 10)">AND</div>
+	<div title="1000 | ИЛИ-НЕ"             onclick="editor.selectItem(this, 11)">NOR</div>
+	<div title="1110 | И-НЕ"               onclick="editor.selectItem(this, 12)">NAND</div>
+	<div title="0110 | исключающее ИЛИ"    onclick="editor.selectItem(this, 13)">XOR</div>
+	<div title="1001 | исключающее ИЛИ-НЕ" onclick="editor.selectItem(this, 14)">XNOR</div>
+	<div title="10 | НЕ"                   onclick="editor.selectItem(this, 15)">NOT</div>
+
 	<span><hr></span>
-	<div onclick="editor.selectItem(this, 16)">input</div>
-	<div onclick="editor.selectItem(this, 17)">bit</div>
+
+	<div title="Вход (для компонента или перенаправления сигнала)" onclick="editor.selectItem(this, 16)">input</div>
+	<div title="Бит (для отображения состояния сигнала)"           onclick="editor.selectItem(this, 17)">bit</div>
 </div>
 
 
