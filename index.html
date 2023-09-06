@@ -24,18 +24,18 @@
 	<img ondragstart="return false" onclick="editor.selectItem(this, 7)" src="img/editor/door.png" />
 	<img ondragstart="return false" onclick="editor.selectItem(this, 8)" src="img/editor/seeker.png" />
 
-	<div title="0111 | ИЛИ"                onclick="editor.selectItem(this, 9)">OR</div>
-	<div title="0001 | И"                  onclick="editor.selectItem(this, 10)">AND</div>
-	<div title="1000 | ИЛИ-НЕ"             onclick="editor.selectItem(this, 11)">NOR</div>
-	<div title="1110 | И-НЕ"               onclick="editor.selectItem(this, 12)">NAND</div>
-	<div title="0110 | исключающее ИЛИ"    onclick="editor.selectItem(this, 13)">XOR</div>
-	<div title="1001 | исключающее ИЛИ-НЕ" onclick="editor.selectItem(this, 14)">XNOR</div>
-	<div title="10 | НЕ"                   onclick="editor.selectItem(this, 15)">NOT</div>
+	<div title="0111 | ИЛИ"               >OR</div>
+	<div title="0001 | И"                 >AND</div>
+	<div title="1000 | ИЛИ-НЕ"            >NOR</div>
+	<div title="1110 | И-НЕ"              >NAND</div>
+	<div title="0110 | исключающее ИЛИ"   >XOR</div>
+	<div title="1001 | исключающее ИЛИ-НЕ">XNOR</div>
+	<div title="10 | НЕ"                  >NOT</div>
 
 	<span><hr></span>
 
-	<div title="Вход (для компонента или перенаправления сигнала)" onclick="editor.selectItem(this, 16)">input</div>
-	<div title="Бит (для отображения состояния сигнала)"           onclick="editor.selectItem(this, 17)">bit</div>
+	<div title="Вход (для компонента или перенаправления сигнала)">input</div>
+	<div title="Бит (для отображения состояния сигнала)"          >bit</div>
 </div>
 
 
@@ -87,6 +87,8 @@
 
 <iframe id="playFrame" src="GPlayer/index.html"></iframe>
 <div id="iframeClose" onclick="editor.closeFrame()">CLOSE</div>
+
+<input id="colorBtn" type="color" value="#75e1cf" title="Изменить цвет следующего кастомного компонента (C - перекрасить инпут/рамку, Shift+C - загрузить цвет первого шейпа в кнопку)" style="position: absolute; bottom: 3px; right: 3px; zIndex: 0">
 
 
 <!-- 
