@@ -25,6 +25,15 @@ addEventListener("keydown", e => {
 		window.iframeClose.click();
 		window.parent.focus();
 	}
+
+
+
+	if(e.keyCode == 'V'.charCodeAt() && !e.ctrlKey && !e.repeat) lineBuilder.createLines(); // Зажать V - показать соединения
+});
+addEventListener("keyup", e => {
+	if(document.activeElement != document.body) return;
+
+	if(e.keyCode == 'V'.charCodeAt()) lineBuilder.removeLines();
 });
 
 

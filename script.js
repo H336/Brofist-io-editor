@@ -18,6 +18,61 @@ frames[0].iframeClose = iframeClose; // (чтобы можно было закр
 
 
 
+
+var findUnlinkedButtons = () => {
+	let map = new Map;
+	connectionManager.forEachButtonAndGate((button, gate, gateId) => {
+		if(gate || gateId == '' || gateId == 'gateOUTPUT') return;
+
+		let arr = map.get(button);
+		if(!arr) map.set(button, arr=[]);
+		arr.push(gateId);
+	});
+
+	let result = Object.create(null);
+	[...map].map(([button, gateIds], i) => {
+		Object.defineProperty(result, `${i+1}. ${gateIds.join(' ')}`, {
+			get() {
+
+
+				let event = {data: {originalEvent: {}}};
+				button.g._events.mousedown.fn.call(button.g, {data: {originalEvent: {}}});
+				editor.onMouseUp({button: 0});
+
+				let startScale = gp.gWorld.scale.x,
+					startPos = [gp.gWorld.x, gp.gWorld.y],
+					endScale = 2,
+					endPos = [button.getX(), button.getY()];
+
+				let tanh = t => .5 + .5*Math.tanh(8 * (t - .5));
+				let lerp = (from,to, t) => from*(1-t) + to*t;
+
+				let now = +new Date;
+				let int = setInterval(() => {
+					let t = (new Date - now) / 1000;
+					if(t > 1) return clearInterval(int);
+
+					let scale = lerp(startScale, endScale, tanh(t - .1));
+					let _endPos = [innerWidth/2 - endPos[0]*scale, innerHeight/2 - endPos[1]*scale];
+					let [x, y] = startPos.map((_, i) => lerp(startPos[i], _endPos[i], tanh(t + .1)));
+
+					[gp.gWorld.x, gp.gWorld.y] = [x, y];
+					gp.gWorld.scale.set(scale);
+				});
+
+
+			},
+			enumerable: true
+		})
+	});
+
+	console.log(`%cНайдено ${map.size} бесполезных связей!\n\n%cОткрой объект ниже.\nПри нажатии на (...) тебя прокрутит к кнопке с лишними связями (лишние id).\nСлева от (...) через пробел написаны эти id (их можно удалить из кнопки).\n\n(P.s. не обращай внимания на то, что написано внизу %cсветло-розовым%c цветом)\n\n`, "color: #00f; font-weight: 900", "color: #00f", "color: #C46FBE", "color: #00f", result);
+}
+
+
+
+
+
 var logicGateLinker = {
 	from: null,
 	to: null,
@@ -80,7 +135,7 @@ var logicGateLinker = {
 			gate.id += (gate.id ? '|' : '') + `${gateId}:1`;
 		} else if(gateId.startsWith("gateINPUT")) {
 			gateId = "gate" + Math.random();
-			gate.id = gate.id.replace(/\bgateINPUT\d/, gateId);
+			gate.id = gate.id.replace(/\bgateINPUT/, gateId);
 		}
 
 		buttonShape.id = buttonShape.id.replace("gateOUTPUT", '');
@@ -114,7 +169,7 @@ var logicGateLinker = {
 			btn
 		]);
 
-		return g.list[g.list.length - 2].shapes[2]; // Я не могу просто вернуть btn.shapes[2], потому что мне нужна кнопка, загруженная В МИР (p.s. и я беру length-2 вместо length-1, потому что последним элементом g.list будет handle, а не кнопка, как ты мог подумать)
+		return gp.list[gp.list.length - 2].shapes[2]; // Я не могу просто вернуть btn.shapes[2], потому что мне нужна кнопка, загруженная В МИР (p.s. и я беру length-2 вместо length-1, потому что последним элементом gp.list будет handle, а не кнопка, как ты мог подумать)
 	}
 }
 addEventListener("mousemove", () => logicGateLinker.mousemove());
@@ -123,18 +178,19 @@ addEventListener("mousemove", () => logicGateLinker.mousemove());
 
 
 
-var OR = (invA, invB, color, text) => `[{"x":0,"y":0,"angle":0,"mass":0,"id":"","shapes":[{"x":0,"y":0,"width":90,"height":95,"angle":0,"radius":40,"alpha":1,"id":"","collision":false,"color":"${color}","fontSize":"","text":"","make":3,"type":1},{"x":0,"y":0,"width":80,"height":85,"angle":0,"radius":35,"alpha":1,"id":"","collision":false,"color":"0xffffff","fontSize":"","text":"","make":3,"type":1},{"x":0,"y":-30,"width":39,"height":29,"angle":0,"radius":19.5,"alpha":1,"id":"","collision":false,"color":"${color}","fontSize":26,"text":"${text}","make":3,"type":3}]},{"x":0,"y":29,"angle":0,"mass":0,"id":"","shapes":[{"x":0,"y":0,"width":20,"height":13,"angle":0,"radius":10,"alpha":1,"id":"","collision":false,"color":"0xff0000","fontSize":"","text":"","make":3,"type":1},{"x":-0.5690336227416992,"y":-4.433515295386314,"width":34,"height":30,"angle":0,"radius":50,"alpha":0.2,"id":"button:gateOUTPUT","collision":false,"color":"0x00ff00","fontSize":"","text":"","make":1,"type":1}]},{"x":-10.999999940395355,"y":-0.9999999776482582,"angle":0,"mass":0,"id":"gateINPUT1:${1-invA}","shapes":[{"x":0,"y":0,"width":20,"height":30,"angle":0,"radius":50,"alpha":1,"id":"","collision":false,"color":"${color}","fontSize":"","text":"","make":1,"type":1}]},{"x":10.999999940395355,"y":-0.9999999776482582,"angle":0,"mass":0,"id":"gateINPUT2:${1-invB}","shapes":[{"x":0,"y":0,"width":20,"height":30,"angle":0,"radius":50,"alpha":1,"id":"","collision":false,"color":"${color}","fontSize":"","text":"","make":1,"type":1}]}]`;
-var AND = (invA, invB, color, text) => `[{"x":0,"y":0,"angle":0,"mass":0,"id":"","shapes":[{"x":0,"y":0,"width":100,"height":95,"angle":0,"radius":50,"alpha":1,"id":"","collision":false,"color":"${color}","fontSize":"","text":"","make":3,"type":1},{"x":0,"y":0,"width":90,"height":85,"angle":0,"radius":45,"alpha":1,"id":"","collision":false,"color":"0xffffff","fontSize":"","text":"","make":3,"type":1},{"x":0,"y":-30,"width":55,"height":29,"angle":0,"radius":27.5,"alpha":1,"id":"","collision":false,"color":"${color}","fontSize":26,"text":"${text}","make":3,"type":3}]},{"x":-19.481326639652252,"y":28,"angle":0,"mass":0,"id":"","shapes":[{"x":0,"y":0,"width":20,"height":13,"angle":0,"radius":10,"alpha":1,"id":"","collision":false,"color":"0xff0000","fontSize":"","text":"","make":3,"type":1},{"x":-0.5690336227416992,"y":-4.433515295386314,"width":34,"height":30,"angle":0,"radius":50,"alpha":0.8,"id":"button:gate0.3452262455809014","collision":false,"color":"0x000000","fontSize":"","text":"","make":1,"type":1}]},{"x":20.518673956394196,"y":28,"angle":0,"mass":0,"id":"gate0.3452262455809014:1","shapes":[{"x":0,"y":0,"width":20,"height":13,"angle":0,"radius":10,"alpha":1,"id":"","collision":false,"color":"0xff0000","fontSize":"","text":"","make":3,"type":1},{"x":-0.5690336227416992,"y":-4.433515295386314,"width":34,"height":30,"angle":0,"radius":50,"alpha":0.2,"id":"button:gateOUTPUT","collision":false,"color":"0x00ff00","fontSize":"","text":"","make":1,"type":1}]},{"x":-19.481326639652252,"y":-1.070539653301239,"angle":0,"mass":0,"id":"gateINPUT1:${1-invA}","shapes":[{"x":0,"y":0,"width":20,"height":30,"angle":0,"radius":50,"alpha":1,"id":"","collision":false,"color":"${color}","fontSize":"","text":"","make":1,"type":1}]},{"x":20.518673956394196,"y":-1.070539653301239,"angle":0,"mass":0,"id":"gateINPUT2:${1-invB}","shapes":[{"x":0,"y":0,"width":20,"height":30,"angle":0,"radius":50,"alpha":1,"id":"","collision":false,"color":"${color}","fontSize":"","text":"","make":1,"type":1}]}]`;
-var XOR = (inv, color, text) => `[{"x":0,"y":0,"angle":0,"mass":0,"id":"","shapes":[{"x":0,"y":0,"width":180,"height":120,"angle":0,"radius":90,"alpha":1,"id":"","collision":false,"color":"${color}","fontSize":"","text":"","make":3,"type":1},{"x":0,"y":0,"width":170,"height":110.00000000000001,"angle":0,"radius":85,"alpha":1,"id":"","collision":false,"color":"0xffffff","fontSize":"","text":"","make":3,"type":1},{"x":0,"y":-38,"width":57,"height":29,"angle":0,"radius":28.5,"alpha":1,"id":"","collision":false,"color":"${color}","fontSize":26,"text":"${text}","make":3,"type":3}]},{"x":-25.05776286125183,"y":-0.9514358825981617,"angle":0,"mass":0,"id":"gate0.3604568895280307:0","shapes":[{"x":0,"y":0,"width":30,"height":20,"angle":0,"radius":50,"alpha":1,"id":"","collision":false,"color":"${color}","fontSize":"","text":"","make":1,"type":1}]},{"x":-61.75079345703125,"y":-3.5435903817415237,"angle":0,"mass":0,"id":"","shapes":[{"x":0,"y":0,"width":20,"height":13,"angle":0,"radius":10,"alpha":1,"id":"","collision":false,"color":"0xff0000","fontSize":"","text":"","make":3,"type":1},{"x":-0.5690336227416992,"y":-4.433515295386314,"width":34,"height":30,"angle":0,"radius":50,"alpha":0.8,"id":"button:gate0.4782225835195002,gate0.4088050025018075","collision":false,"color":"0x000000","fontSize":"","text":"","make":1,"type":1}]},{"x":-87.5,"y":-7.384967058897018,"angle":0,"mass":0,"id":"gateINPUT1:1","shapes":[{"x":0,"y":0,"width":30,"height":20,"angle":0,"radius":50,"alpha":1,"id":"","collision":false,"color":"${color}","fontSize":"","text":"","make":1,"type":1}]},{"x":-60.87098717689514,"y":40.24655222892761,"angle":0,"mass":0,"id":"","shapes":[{"x":0,"y":0,"width":20,"height":13,"angle":0,"radius":10,"alpha":1,"id":"","collision":false,"color":"0xff0000","fontSize":"","text":"","make":3,"type":1},{"x":-0.5690336227416992,"y":-4.433515295386314,"width":34,"height":30,"angle":0,"radius":50,"alpha":0.8,"id":"button:gate0.3604568895280307,gate0.4782225835195002","collision":false,"color":"0x000000","fontSize":"","text":"","make":1,"type":1}]},{"x":-87.5,"y":35.53915619850159,"angle":0,"mass":0,"id":"gateINPUT2:1","shapes":[{"x":0,"y":0,"width":30,"height":20,"angle":0,"radius":50,"alpha":1,"id":"","collision":false,"color":"${color}","fontSize":"","text":"","make":1,"type":1}]},{"x":1.2687081471085548,"y":4.212365671992302,"angle":0,"mass":0,"id":"gate0.4782225835195002:1","shapes":[{"x":0,"y":0,"width":20,"height":13,"angle":0,"radius":10,"alpha":1,"id":"","collision":false,"color":"0xff0000","fontSize":"","text":"","make":3,"type":1},{"x":-0.5690336227416992,"y":-4.433515295386314,"width":34,"height":30,"angle":0,"radius":50,"alpha":0.8,"id":"button:gate0.41367601429227285","collision":false,"color":"0x000000","fontSize":"","text":"","make":1,"type":1}]},{"x":-24.875442683696747,"y":31.600970029830933,"angle":0,"mass":0,"id":"gate0.4088050025018075:0","shapes":[{"x":0,"y":0,"width":30,"height":20,"angle":0,"radius":50,"alpha":1,"id":"","collision":false,"color":"${color}","fontSize":"","text":"","make":1,"type":1}]},{"x":1.3129345141351223,"y":37.01865077018738,"angle":0,"mass":0,"id":"gate0.4782225835195002:1","shapes":[{"x":0,"y":0,"width":20,"height":13,"angle":0,"radius":10,"alpha":1,"id":"","collision":false,"color":"0xff0000","fontSize":"","text":"","make":3,"type":1},{"x":-0.5690336227416992,"y":-4.433515295386314,"width":34,"height":30,"angle":0,"radius":50,"alpha":0.8,"id":"button:gate0.41367601429227285","collision":false,"color":"0x000000","fontSize":"","text":"","make":1,"type":1}]},{"x":37.16868758201599,"y":16.012029349803925,"angle":0,"mass":0,"id":"gate0.41367601429227285:${1-inv}","shapes":[{"x":0,"y":0,"width":30,"height":20,"angle":0,"radius":50,"alpha":1,"id":"","collision":false,"color":"${color}","fontSize":"","text":"","make":1,"type":1}]},{"x":63.06765675544739,"y":19.360949099063873,"angle":0,"mass":0,"id":"","shapes":[{"x":0,"y":0,"width":20,"height":13,"angle":0,"radius":10,"alpha":1,"id":"","collision":false,"color":"0xff0000","fontSize":"","text":"","make":3,"type":1},{"x":-0.5690336227416992,"y":-4.433515295386314,"width":34,"height":30,"angle":0,"radius":50,"alpha":0.2,"id":"button:gateOUTPUT","collision":false,"color":"0x00ff00","fontSize":"","text":"","make":1,"type":1}]}]`;
+var OR = (invA, invB, color, text) => `[{"x":0,"y":0,"angle":0,"mass":0,"id":"","shapes":[{"x":0,"y":0,"width":90,"height":95,"angle":0,"radius":40,"alpha":1,"id":"","collision":false,"color":"${color}","fontSize":"","text":"","make":3,"type":1},{"x":0,"y":0,"width":80,"height":85,"angle":0,"radius":35,"alpha":1,"id":"","collision":false,"color":"0xffffff","fontSize":"","text":"","make":3,"type":1},{"x":0,"y":-30,"width":39,"height":29,"angle":0,"radius":19.5,"alpha":1,"id":"","collision":false,"color":"${color}","fontSize":26,"text":"${text}","make":3,"type":3}]},{"x":0,"y":29,"angle":0,"mass":0,"id":"","shapes":[{"x":0,"y":0,"width":20,"height":13,"angle":0,"radius":10,"alpha":1,"id":"","collision":false,"color":"0xff0000","fontSize":"","text":"","make":3,"type":1},{"x":-0.5690336227416992,"y":-4.433515295386314,"width":34,"height":30,"angle":0,"radius":50,"alpha":0.2,"id":"button:gateOUTPUT","collision":false,"color":"0x00ff00","fontSize":"","text":"","make":1,"type":1}]},{"x":-10.999999940395355,"y":-0.9999999776482582,"angle":0,"mass":0,"id":"gateINPUT:${1-invA}","shapes":[{"x":0,"y":0,"width":20,"height":30,"angle":0,"radius":50,"alpha":1,"id":"","collision":false,"color":"${color}","fontSize":"","text":"","make":1,"type":1}]},{"x":10.999999940395355,"y":-0.9999999776482582,"angle":0,"mass":0,"id":"gateINPUT:${1-invB}","shapes":[{"x":0,"y":0,"width":20,"height":30,"angle":0,"radius":50,"alpha":1,"id":"","collision":false,"color":"${color}","fontSize":"","text":"","make":1,"type":1}]}]`;
+var AND = (invA, invB, color, text) => `[{"x":0,"y":0,"angle":0,"mass":0,"id":"","shapes":[{"x":0,"y":0,"width":100,"height":95,"angle":0,"radius":50,"alpha":1,"id":"","collision":false,"color":"${color}","fontSize":"","text":"","make":3,"type":1},{"x":0,"y":0,"width":90,"height":85,"angle":0,"radius":45,"alpha":1,"id":"","collision":false,"color":"0xffffff","fontSize":"","text":"","make":3,"type":1},{"x":0,"y":-30,"width":55,"height":29,"angle":0,"radius":27.5,"alpha":1,"id":"","collision":false,"color":"${color}","fontSize":26,"text":"${text}","make":3,"type":3}]},{"x":-19.481326639652252,"y":28,"angle":0,"mass":0,"id":"","shapes":[{"x":0,"y":0,"width":20,"height":13,"angle":0,"radius":10,"alpha":1,"id":"","collision":false,"color":"0xff0000","fontSize":"","text":"","make":3,"type":1},{"x":-0.5690336227416992,"y":-4.433515295386314,"width":34,"height":30,"angle":0,"radius":50,"alpha":0.8,"id":"button:gate0.3452262455809014","collision":false,"color":"0x000000","fontSize":"","text":"","make":1,"type":1}]},{"x":20.518673956394196,"y":28,"angle":0,"mass":0,"id":"gate0.3452262455809014:1","shapes":[{"x":0,"y":0,"width":20,"height":13,"angle":0,"radius":10,"alpha":1,"id":"","collision":false,"color":"0xff0000","fontSize":"","text":"","make":3,"type":1},{"x":-0.5690336227416992,"y":-4.433515295386314,"width":34,"height":30,"angle":0,"radius":50,"alpha":0.2,"id":"button:gateOUTPUT","collision":false,"color":"0x00ff00","fontSize":"","text":"","make":1,"type":1}]},{"x":-19.481326639652252,"y":-1.070539653301239,"angle":0,"mass":0,"id":"gateINPUT:${1-invA}","shapes":[{"x":0,"y":0,"width":20,"height":30,"angle":0,"radius":50,"alpha":1,"id":"","collision":false,"color":"${color}","fontSize":"","text":"","make":1,"type":1}]},{"x":20.518673956394196,"y":-1.070539653301239,"angle":0,"mass":0,"id":"gateINPUT:${1-invB}","shapes":[{"x":0,"y":0,"width":20,"height":30,"angle":0,"radius":50,"alpha":1,"id":"","collision":false,"color":"${color}","fontSize":"","text":"","make":1,"type":1}]}]`;
+//var XOR = (inv, color, text) => `[{"x":0,"y":0,"angle":0,"mass":0,"id":"","shapes":[{"x":0,"y":0,"width":180,"height":120,"angle":0,"radius":90,"alpha":1,"id":"","collision":false,"color":"${color}","fontSize":"","text":"","make":3,"type":1},{"x":0,"y":0,"width":170,"height":110.00000000000001,"angle":0,"radius":85,"alpha":1,"id":"","collision":false,"color":"0xffffff","fontSize":"","text":"","make":3,"type":1},{"x":0,"y":-38,"width":57,"height":29,"angle":0,"radius":28.5,"alpha":1,"id":"","collision":false,"color":"${color}","fontSize":26,"text":"${text}","make":3,"type":3}]},{"x":-25.05776286125183,"y":-0.9514358825981617,"angle":0,"mass":0,"id":"gate0.3604568895280307:0","shapes":[{"x":0,"y":0,"width":30,"height":20,"angle":0,"radius":50,"alpha":1,"id":"","collision":false,"color":"${color}","fontSize":"","text":"","make":1,"type":1}]},{"x":-61.75079345703125,"y":-3.5435903817415237,"angle":0,"mass":0,"id":"","shapes":[{"x":0,"y":0,"width":20,"height":13,"angle":0,"radius":10,"alpha":1,"id":"","collision":false,"color":"0xff0000","fontSize":"","text":"","make":3,"type":1},{"x":-0.5690336227416992,"y":-4.433515295386314,"width":34,"height":30,"angle":0,"radius":50,"alpha":0.8,"id":"button:gate0.4782225835195002,gate0.4088050025018075","collision":false,"color":"0x000000","fontSize":"","text":"","make":1,"type":1}]},{"x":-87.5,"y":-7.384967058897018,"angle":0,"mass":0,"id":"gateINPUT:1","shapes":[{"x":0,"y":0,"width":30,"height":20,"angle":0,"radius":50,"alpha":1,"id":"","collision":false,"color":"${color}","fontSize":"","text":"","make":1,"type":1}]},{"x":-60.87098717689514,"y":40.24655222892761,"angle":0,"mass":0,"id":"","shapes":[{"x":0,"y":0,"width":20,"height":13,"angle":0,"radius":10,"alpha":1,"id":"","collision":false,"color":"0xff0000","fontSize":"","text":"","make":3,"type":1},{"x":-0.5690336227416992,"y":-4.433515295386314,"width":34,"height":30,"angle":0,"radius":50,"alpha":0.8,"id":"button:gate0.3604568895280307,gate0.4782225835195002","collision":false,"color":"0x000000","fontSize":"","text":"","make":1,"type":1}]},{"x":-87.5,"y":35.53915619850159,"angle":0,"mass":0,"id":"gateINPUT:1","shapes":[{"x":0,"y":0,"width":30,"height":20,"angle":0,"radius":50,"alpha":1,"id":"","collision":false,"color":"${color}","fontSize":"","text":"","make":1,"type":1}]},{"x":1.2687081471085548,"y":4.212365671992302,"angle":0,"mass":0,"id":"gate0.4782225835195002:1","shapes":[{"x":0,"y":0,"width":20,"height":13,"angle":0,"radius":10,"alpha":1,"id":"","collision":false,"color":"0xff0000","fontSize":"","text":"","make":3,"type":1},{"x":-0.5690336227416992,"y":-4.433515295386314,"width":34,"height":30,"angle":0,"radius":50,"alpha":0.8,"id":"button:gate0.41367601429227285","collision":false,"color":"0x000000","fontSize":"","text":"","make":1,"type":1}]},{"x":-24.875442683696747,"y":31.600970029830933,"angle":0,"mass":0,"id":"gate0.4088050025018075:0","shapes":[{"x":0,"y":0,"width":30,"height":20,"angle":0,"radius":50,"alpha":1,"id":"","collision":false,"color":"${color}","fontSize":"","text":"","make":1,"type":1}]},{"x":1.3129345141351223,"y":37.01865077018738,"angle":0,"mass":0,"id":"gate0.4782225835195002:1","shapes":[{"x":0,"y":0,"width":20,"height":13,"angle":0,"radius":10,"alpha":1,"id":"","collision":false,"color":"0xff0000","fontSize":"","text":"","make":3,"type":1},{"x":-0.5690336227416992,"y":-4.433515295386314,"width":34,"height":30,"angle":0,"radius":50,"alpha":0.8,"id":"button:gate0.41367601429227285","collision":false,"color":"0x000000","fontSize":"","text":"","make":1,"type":1}]},{"x":37.16868758201599,"y":16.012029349803925,"angle":0,"mass":0,"id":"gate0.41367601429227285:${1-inv}","shapes":[{"x":0,"y":0,"width":30,"height":20,"angle":0,"radius":50,"alpha":1,"id":"","collision":false,"color":"${color}","fontSize":"","text":"","make":1,"type":1}]},{"x":63.06765675544739,"y":19.360949099063873,"angle":0,"mass":0,"id":"","shapes":[{"x":0,"y":0,"width":20,"height":13,"angle":0,"radius":10,"alpha":1,"id":"","collision":false,"color":"0xff0000","fontSize":"","text":"","make":3,"type":1},{"x":-0.5690336227416992,"y":-4.433515295386314,"width":34,"height":30,"angle":0,"radius":50,"alpha":0.2,"id":"button:gateOUTPUT","collision":false,"color":"0x00ff00","fontSize":"","text":"","make":1,"type":1}]}]`;
+var XOR = (inv, color, text) => `[{"x":0,"y":0,"angle":0,"mass":0,"id":"","shapes":[{"x":0,"y":0,"width":180,"height":120,"angle":0,"radius":90,"alpha":1,"id":"","collision":false,"color":"${color}","fontSize":"","text":"","make":3,"type":1},{"x":0,"y":0,"width":170,"height":110.00000000000001,"angle":0,"radius":85,"alpha":1,"id":"","collision":false,"color":"0xffffff","fontSize":"","text":"","make":3,"type":1},{"x":0,"y":-38,"width":57,"height":29,"angle":0,"radius":28.5,"alpha":1,"id":"","collision":false,"color":"${color}","fontSize":26,"text":"${text}","make":3,"type":3}]},{"x":-25.291675329208374,"y":-1.8870817497372627,"angle":0,"mass":0,"id":"gate0.6611794239975475:1","shapes":[{"x":0,"y":0,"width":30,"height":20,"angle":0,"radius":50,"alpha":1,"id":"","collision":false,"color":"${color}","fontSize":"","text":"","make":1,"type":1}]},{"x":-61.492323875427246,"y":-1.734275184571743,"angle":0,"mass":0,"id":"","shapes":[{"x":0,"y":0,"width":20,"height":13,"angle":0,"radius":10,"alpha":1,"id":"","collision":false,"color":"0xff0000","fontSize":"","text":"","make":3,"type":1},{"x":-0.5690336227416992,"y":-4.433515295386314,"width":34,"height":30,"angle":0,"radius":50,"alpha":0.8,"id":"button:gate0.6611794239975475,gate0.7649400976514418","collision":false,"color":"0x000000","fontSize":"","text":"","make":1,"type":1}]},{"x":-87.241530418396,"y":-5.575650930404663,"angle":0,"mass":0,"id":"gateINPUT:1","shapes":[{"x":0,"y":0,"width":30,"height":20,"angle":0,"radius":50,"alpha":1,"id":"","collision":false,"color":"${color}","fontSize":"","text":"","make":1,"type":1}]},{"x":-61.114442348480225,"y":41.13922119140625,"angle":0,"mass":0,"id":"","shapes":[{"x":0,"y":0,"width":20,"height":13,"angle":0,"radius":10,"alpha":1,"id":"","collision":false,"color":"0xff0000","fontSize":"","text":"","make":3,"type":1},{"x":-0.5690336227416992,"y":-4.433515295386314,"width":34,"height":30,"angle":0,"radius":50,"alpha":0.8,"id":"button:gate0.06027977447655908,gate0.11609790521755792","collision":false,"color":"0x000000","fontSize":"","text":"","make":1,"type":1}]},{"x":-87.10989952087402,"y":37.526148557662964,"angle":0,"mass":0,"id":"gateINPUT:1","shapes":[{"x":0,"y":0,"width":30,"height":20,"angle":0,"radius":50,"alpha":1,"id":"","collision":false,"color":"${color}","fontSize":"","text":"","make":1,"type":1}]},{"x":1.034796703606844,"y":3.276720270514488,"angle":0,"mass":0,"id":"gate0.11609790521755792:0","shapes":[{"x":0,"y":0,"width":20,"height":13,"angle":0,"radius":10,"alpha":1,"id":"","collision":false,"color":"0xff0000","fontSize":"","text":"","make":3,"type":1},{"x":-0.5690336227416992,"y":-4.433515295386314,"width":34,"height":30,"angle":0,"radius":50,"alpha":0.8,"id":"button:gate0.5840449963381575","collision":false,"color":"0x000000","fontSize":"","text":"","make":1,"type":1}]},{"x":-25.10935366153717,"y":30.66532015800476,"angle":0,"mass":0,"id":"gate0.06027977447655908:1","shapes":[{"x":0,"y":0,"width":30,"height":20,"angle":0,"radius":50,"alpha":1,"id":"","collision":false,"color":"${color}","fontSize":"","text":"","make":1,"type":1}]},{"x":1.0790231637656689,"y":36.083000898361206,"angle":0,"mass":0,"id":"gate0.7649400976514418:0","shapes":[{"x":0,"y":0,"width":20,"height":13,"angle":0,"radius":10,"alpha":1,"id":"","collision":false,"color":"0xff0000","fontSize":"","text":"","make":3,"type":1},{"x":-0.5690336227416992,"y":-4.433515295386314,"width":34,"height":30,"angle":0,"radius":50,"alpha":0.8,"id":"button:gate0.5840449963381575","collision":false,"color":"0x000000","fontSize":"","text":"","make":1,"type":1}]},{"x":37.16868758201599,"y":16.012029349803925,"angle":0,"mass":0,"id":"gate0.5840449963381575:${1-inv}","shapes":[{"x":0,"y":0,"width":30,"height":20,"angle":0,"radius":50,"alpha":1,"id":"","collision":false,"color":"${color}","fontSize":"","text":"","make":1,"type":1}]},{"x":63.06765675544739,"y":19.360949099063873,"angle":0,"mass":0,"id":"","shapes":[{"x":0,"y":0,"width":20,"height":13,"angle":0,"radius":10,"alpha":1,"id":"","collision":false,"color":"0xff0000","fontSize":"","text":"","make":3,"type":1},{"x":-0.5690336227416992,"y":-4.433515295386314,"width":34,"height":30,"angle":0,"radius":50,"alpha":0.2,"id":"button:gateOUTPUT","collision":false,"color":"0x00ff00","fontSize":"","text":"","make":1,"type":1}]}]`;
 var logicGates = Object.assign(Object.create(null), {
 	OR:   OR (0, 0, "0x7300ff", "OR"),
 	AND:  AND(0, 0, "0x00c8ff", "AND"),
-	NOR:  OR (1, 1, "0x00ff6e", "NOR"),
-	NAND: AND(1, 1, "0xb7db00", "NAND"),
+	NOR:  AND(1, 1, "0x00ff6e", "NOR"),
+	NAND: OR (1, 1, "0xb7db00", "NAND"),
 	XOR:  XOR(0,    "0xff0000", "XOR"),
-	XNOR: XOR(0,    "0xff00d0", "XNOR"),
+	XNOR: XOR(1,    "0xff00d0", "XNOR"),
 
-	NOT: ((color="0xe8ca78") => `[{"x":0,"y":0,"angle":0,"mass":0,"id":"","shapes":[{"x":0,"y":0,"width":90,"height":70,"angle":0,"radius":45,"alpha":1,"id":"","collision":false,"color":"${color}","fontSize":"","text":"","make":3,"type":1},{"x":0,"y":0,"width":80,"height":60.00000000000001,"angle":0,"radius":40,"alpha":1,"id":"","collision":false,"color":"0xffffff","fontSize":"","text":"","make":3,"type":1},{"x":0,"y":-15.5,"width":55,"height":29,"angle":0,"radius":27.5,"alpha":1,"id":"","collision":false,"color":"${color}","fontSize":26,"text":"NOT","make":3,"type":3}]},{"x":11.290519684553146,"y":16.015052795410156,"angle":0,"mass":0,"id":"","shapes":[{"x":0,"y":0,"width":20,"height":13,"angle":0,"radius":10,"alpha":1,"id":"","collision":false,"color":"0xff0000","fontSize":"","text":"","make":3,"type":1},{"x":-0.5690336227416992,"y":-4.433515295386314,"width":34,"height":30,"angle":0,"radius":50,"alpha":0.2,"id":"button:gateOUTPUT","collision":false,"color":"0x00ff00","fontSize":"","text":"","make":1,"type":1}]},{"x":-15.306521952152252,"y":11.85791864991188,"angle":0,"mass":0,"id":"gateINPUT1:0","shapes":[{"x":0,"y":0,"width":30,"height":20,"angle":0,"radius":50,"alpha":1,"id":"","collision":false,"color":"${color}","fontSize":"","text":"","make":1,"type":1}]}]`)(),
+	NOT: ((color="0xe8ca78") => `[{"x":0,"y":0,"angle":0,"mass":0,"id":"","shapes":[{"x":0,"y":0,"width":90,"height":70,"angle":0,"radius":45,"alpha":1,"id":"","collision":false,"color":"${color}","fontSize":"","text":"","make":3,"type":1},{"x":0,"y":0,"width":80,"height":60.00000000000001,"angle":0,"radius":40,"alpha":1,"id":"","collision":false,"color":"0xffffff","fontSize":"","text":"","make":3,"type":1},{"x":0,"y":-15.5,"width":55,"height":29,"angle":0,"radius":27.5,"alpha":1,"id":"","collision":false,"color":"${color}","fontSize":26,"text":"NOT","make":3,"type":3}]},{"x":11.290519684553146,"y":16.015052795410156,"angle":0,"mass":0,"id":"","shapes":[{"x":0,"y":0,"width":20,"height":13,"angle":0,"radius":10,"alpha":1,"id":"","collision":false,"color":"0xff0000","fontSize":"","text":"","make":3,"type":1},{"x":-0.5690336227416992,"y":-4.433515295386314,"width":34,"height":30,"angle":0,"radius":50,"alpha":0.2,"id":"button:gateOUTPUT","collision":false,"color":"0x00ff00","fontSize":"","text":"","make":1,"type":1}]},{"x":-15.306521952152252,"y":11.85791864991188,"angle":0,"mass":0,"id":"gateINPUT:0","shapes":[{"x":0,"y":0,"width":30,"height":20,"angle":0,"radius":50,"alpha":1,"id":"","collision":false,"color":"${color}","fontSize":"","text":"","make":1,"type":1}]}]`)(),
 	input: ((color="0x75e1cf") => `[{"x":19.478538632392883,"y":4.4,"angle":0,"mass":0,"id":"","shapes":[{"x":0,"y":0,"width":20,"height":13,"angle":0,"radius":10,"alpha":1,"id":"","collision":false,"color":"0xff0000","fontSize":"","text":"","make":3,"type":1},{"x":-0.5690336227416992,"y":-4.433515295386314,"width":34,"height":30,"angle":0,"radius":50,"alpha":0.2,"id":"button:","collision":false,"color":"0x000000","fontSize":"","text":"","make":1,"type":1}]},{"x":-11.105007469654083,"y":0.07949257269501686,"angle":0,"mass":0,"id":"gateINPUT:1","shapes":[{"x":0,"y":0,"width":50,"height":20,"angle":0,"radius":50,"alpha":1,"id":"","collision":false,"color":"${color}","fontSize":"","text":"","make":1,"type":1}]}]`)(),
 	bit: `[{"x":0,"y":0,"angle":0,"mass":0,"id":"","shapes":[{"x":0,"y":0,"width":50,"height":50,"angle":0,"radius":25,"alpha":1,"id":"","collision":false,"color":"0xff0000","fontSize":"","text":"","make":3,"type":1},{"x":0,"y":0,"width":40,"height":40,"angle":0,"radius":20,"alpha":1,"id":"","collision":false,"color":"0xffffff","fontSize":"","text":"","make":3,"type":1},{"x":0,"y":0,"width":23,"height":44,"angle":0,"radius":11.5,"alpha":1,"id":"","collision":false,"color":"0xff0000","fontSize":40,"text":"0","make":3,"type":3}]},{"x":0,"y":0,"angle":0,"mass":0,"id":"","shapes":[{"x":0,"y":0,"width":50,"height":50,"angle":0,"radius":25,"alpha":1,"id":"","collision":false,"color":"0x00e100","fontSize":"","text":"","make":3,"type":1},{"x":0,"y":0,"width":40,"height":40,"angle":0,"radius":20,"alpha":1,"id":"","collision":false,"color":"0xffffff","fontSize":"","text":"","make":3,"type":1},{"x":0,"y":0,"width":23,"height":44,"angle":0,"radius":11.5,"alpha":1,"id":"","collision":false,"color":"0x00e100","fontSize":40,"text":"1","make":3,"type":3}]}]`
 });
@@ -212,7 +268,7 @@ var customLGManager = {
 			}]
 		}]);
 
-		g.list[g.list.length - 1].setZIndex(0);
+		gp.list[gp.list.length - 1].setZIndex(0);
 	},
 	tryToSave() { // hotkey S
 		let bodiesToSave = JSON.parse(editor.save(0,0,1));
@@ -292,8 +348,46 @@ var customLGManager = {
 
 
 
+
+var connectionManager = {
+	forEachLinkedXY(X, Y, callback) {
+		let gatesOrPlatforms = {};
+		let reg = new RegExp(`\\b${Y}[\\w.]+`); // Регэксп типа /\bgate[\w.]+/
+		gp.list.map(body => {
+			if(!body) return; // При удалении объекта, в gp.list на его месте может появиться null!
+
+			let id = (body.id.match(reg) || [])[0]; // Из body.id == "platformoYmTZ:0.5,0,0,0|gatemP8P3:0|cover:0.5,500" взять "gatemP8P3"	
+			if(!id) return;
+
+			if(!gatesOrPlatforms[id]) gatesOrPlatforms[id] = [];
+			gatesOrPlatforms[id].push(body);
+		});
+		gp.list.map(buttonOrLever => {
+			if(!buttonOrLever) return;
+
+			let shape = buttonOrLever.shapes.find(shape => shape.id.startsWith(X));
+			if(!shape) return;
+
+			let ids = shape.id.split(':')[1].split(','); // shape.id == "button:gate0.20925233411963573,gate0.5695981084388286"
+			ids.map(id => {
+				(gatesOrPlatforms[id] || [null]).map(gateOrPlatform => {
+					callback(buttonOrLever, gateOrPlatform, id);
+				})
+			})
+		});
+	},
+	forEachButtonAndGate(callback) {this.forEachLinkedXY("button", "gate", callback)},
+	forEachLeverAndPlatform(callback) {this.forEachLinkedXY("leaver", "platform", callback)},
+}
+
+
+
+
+
+
+
 // Строитель соединений
-var lineBuilder = {
+var lineBuilder = window => ({
 	lines: [],
 	line(x1,y1, x2,y2, push=true, colors=[0x6FA55B, 0x9fec83]) {
 		let [dx, dy] = [x2-x1, y2-y1];
@@ -309,47 +403,24 @@ var lineBuilder = {
 		let line = new pixi.Graphics().lineStyle(2, colors[0]).drawPolygon(x1,y1, x2,y2); // Темнее
 		let lineTip = new pixi.Graphics().lineStyle(2, colors[1]).drawPolygon(x1,y1, x2 - dx*3,y2 - dy*3); // Ярче
 		if(push) {
-			this.lines.push(line);
-			this.lines.push(lineTip);
+			this.lines.push(line, lineTip);
 		}
-		g.gWorld.addChild(line);
-		g.gWorld.addChild(lineTip);
+		window.gp.gWorld.addChild(line, lineTip);
 		if(len < padding*5) line.alpha = lineTip.alpha = 0;
 
 		return [line, lineTip];
 	},
 	removeLines(lines=this.lines) {
-		lines.map(line => g.gWorld.removeChild(line));
+		lines.map(line => window.gp.gWorld.removeChild(line));
 		if(lines == this.lines) this.lines = [];
 	},
 
 
 
 	connectXwithY(X, Y, colors) {
-		let objects = {};
-		let reg = new RegExp(`\\b${Y}[\\w.]+`); // Регэксп типа /\bgate[\w.]+/
-		g.list.map(body => {
-			if(!body) return; // При удалении объекта, в g.list на его месте может появиться null!
-
-			let id = (body.id.match(reg) || [])[0]; // Из body.id == "platformoYmTZ:0.5,0,0,0|gatemP8P3:0|cover:0.5,500" взять "gatemP8P3"	
-			if(!id) return;
-
-			if(!objects[id]) objects[id] = [];
-			objects[id].push(body);
-		});
-		g.list.map(body => {
-			if(!body) return;
-
-			let shape = body.shapes.find(shape => shape.id.startsWith(X));
-			if(!shape) return;
-
-			let ids = shape.id.split(':')[1].split(','); // shape.id == "button:gate0.20925233411963573,gate0.5695981084388286"
-			ids.map(id => {
-				(objects[id] || []).map(gate => {
-					this.line(body.getX(), body.getY(), gate.getX(), gate.getY(), true, colors);
-				})
-			})
-		});
+		connectionManager.forEachLinkedXY(X, Y, (X, Y) => {
+			if(Y) this.line(X.getX(), X.getY(), Y.getX(), Y.getY(), true, colors);
+		})
 	},
 	createLines() {
 		this.removeLines();
@@ -357,11 +428,13 @@ var lineBuilder = {
 		this.connectXwithY("button", "gate", [0x6fa55b, 0x9fec83]); // green
 		this.connectXwithY("leaver", "platform", [0x9d4646, 0xec8383]); // red
 
-		g.list.map(body => {
+		window.gp.list.map(body => {
 			if(body && body.id == "handle") this.line(body.platformRef.getX(), body.platformRef.getY(), body.getX(), body.getY(), true, [0x5b76a5, 0x83aaec]); // blue
 		});
 	}
-};
+});
+frames[0].lineBuilder = lineBuilder(frames[0]);
+lineBuilder = lineBuilder(window);
 
 
 
@@ -398,7 +471,7 @@ var placeholder = {
 		input: [72, 30]
 	}),
 	mousemove() { // Навееерно можно не пересоздавать это каждый раз, нооо тогда придётся как-то делать чтобы плейсхолдер был всегда поверх всего + чтобы менял размер, если изменился размер компонента.... Проще уж так оставить
-		placeholder.g && g.gWorld.removeChild(placeholder.g);
+		placeholder.g && gp.gWorld.removeChild(placeholder.g);
 
 		let name = editor.selectedItem;
 		if(!logicGates[name]) return;
@@ -412,7 +485,7 @@ var placeholder = {
 		let [w, h] = this.sizes[name];
 
 		placeholder.g = new pixi.Graphics().beginFill(0x006600, .1).drawRect(x-w/2, y-h/2, w, h);
-		g.gWorld.addChild(placeholder.g);
+		gp.gWorld.addChild(placeholder.g);
 	}
 }
 addEventListener("mousemove", () => placeholder.mousemove());
@@ -1900,7 +1973,7 @@ addEventListener("keyup", e => {
 			t.g.dragging = !1,
 			t.g.on("mousedown", function(t) { // Событие нажатия НА объект
 				if(t.data.originalEvent.button == 1) { // note: Колесо мыши
-					logicGateLinker.mousedown(t.target.ref);
+					logicGateLinker.mousedown(this.ref);
 					return;
 				}
 
@@ -1931,7 +2004,7 @@ addEventListener("keyup", e => {
 				}
 			}), t.g.on("mouseup", function(t) {
 				if(t.data.originalEvent.button == 1) { // note: Колесо мыши
-					logicGateLinker.mouseup(t.target.ref);
+					logicGateLinker.mouseup(this.ref);
 				}
 			}))
 		}
@@ -2503,7 +2576,6 @@ addEventListener("keyup", e => {
 			a.setUpModelUpload()
 		}
 		,
-		window.g = g,
 		e.exports = window.editor = a
 	}
 	, {
