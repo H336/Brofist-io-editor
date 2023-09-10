@@ -1043,7 +1043,26 @@ addEventListener("keyup", e => {
 			})
 		}
 		,
+		x.lastUpdate = 0,
+		x.step = 0,        // Как сделать 10 шагов: client.slideshowMs=1/0,client.step=10
+		x.slideshowMs = 0, // Как сделать слайдшоу: client.slideshowMs=300 (чтобы было заметно замедление, тут минимум должно быть =15)
 		x.update = function(t) {
+			/*
+				note: Это чтобы кадр обновлялся каждые 300 мс.
+
+				Гипотеза: Игра обрабатывает объекты в порядке увеличения z-index'а (т.е. сначала объект с z=0, потом с z=1, z=2 итд).
+				Следствие по оптимизации: гейты (которые нажимают кнопки) должны находиться ПОД кнопками (т.е. гейты должны иметь меньший z-index, чем кнопки: ведь тогда обновление схемы пройдёт вего лишь за ОДНУ итерацию).
+				Результат: гипотеза не подтвердилась. Даже если я 100 инпутов подключу друг за другом (притом так, что последний инпут в цепочке будет иметь наименьший z-index - ну т.е. я воспроизведу наихудший случай), ТО ВСЁ РАВНО ВСЕ КНОПКИ НАЖМУТСЯ РАЗОМ!!!! А вот уже "отжиматься" они будут друг за другом, ВНЕ ЗАВИСИМОСТИ ОТ Z-INDEX'А!!! (че происходит??)
+			*/
+			if(new Date - x.lastUpdate < x.slideshowMs) {
+				if(x.step == 0) return;
+				else {
+					x.step--;
+					console.log("step");
+				}
+			}
+			x.lastUpdate = +new Date;
+
 			if (x.runPhysics) {
 				i.sync(),
 				x.timeSince1stUpdate += t,
@@ -2326,8 +2345,16 @@ addEventListener("keyup", e => {
 			var n = [];
 			if (0 != t.length) {
 				"number" == typeof (t = "string" == typeof t ? JSON.parse(t) : t)[0] && (t = JSON.parse(i.decompress(t)));
-				for (var r = 0; r < t.length; r++)
-					n[n.length] = y.createShape(t[r], e)
+				for (var r = 0; r < t.length; r++) {
+					let body = y.createShape(t[r], e);
+					n[n.length] = body;
+
+					// note: При клике на объект в GPlayer он будет логаться в консоль (но клик например на зелёных кругах от платформ - не работает!)
+					body.g.interactive = true;
+					body.g.on("mousedown", a => {
+						console.log(a.target)
+					});
+				}
 			}
 			return n
 		}
