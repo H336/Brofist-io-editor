@@ -21,11 +21,14 @@
 <details>
 	<summary>Также тут есть другие карты...</summary>
 
-- [Компактный дизайн 8-битного сумматора](https://h336.github.io/Brofist-io-editor/?map=8bitAdder-compact)
+- [Компактный дизайн 8-битного сумматора (он быстрее)](https://h336.github.io/Brofist-io-editor/?map=8bitAdder-compact)
 <img src="images/8bitAdder-compact.png" width="250">
 
 - [Инлайновый дизайн 8-битного сумматора](https://h336.github.io/Brofist-io-editor/?map=8bitAdder-inline)
 <img src="images/8bitAdder-inline.png" width="250">
+
+- [Счётчик от 0 до 255](https://h336.github.io/Brofist-io-editor/?map=counter)
+<img src="https://github.com/H336/Brofist-io-editor/assets/40764323/9e1d962f-d4f0-4d4c-8a3d-5389fa25a6c7" width="250">
 
 </details>
 
